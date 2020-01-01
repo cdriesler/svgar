@@ -1,11 +1,11 @@
 {
-    "name": "rust-wasm-ts-module",
-    "version": "1.0.0",
+    "name": "svgar",
+    "version": "0.5.0",
     "main": "dist/index.js",
     "scripts": {
         "build": "npm run build:wasm && npm run build:ts",
         "build:ts": "tsc",
-        "build:wasm": "wasm-pack build --target bundler --out-dir src/wasm",
+        "build:wasm": "wasm-pack build --target bundler --no-typescript --out-dir src/wasm",
         "postbuild": "cpy src/wasm/*.wasm dist/wasm",
         "test": "npm run test:ts && npm run test:wasm",
         "test:ts": "cross-env TS_NODE_PROJECT='tsconfig.test.json' mocha -r ts-node/register src/**/*.spec.ts",

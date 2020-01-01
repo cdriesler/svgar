@@ -1,10 +1,10 @@
 [package]
-name = "rust-wasm"
-version = "0.1.0"
+name = "cream"
+version = "0.5.0"
 authors = ["Chuck <cdriesler.iv@gmail.com>"]
-description = "A sample project with wasm-pack"
-license = "MIT/Apache-2.0"
-repository = "https://github.com/cdriesler/rust-wasm-ts-module"
+description = "Geometry library for svgar"
+license = "AGPL-3.0"
+repository = "https://github.com/cdriesler/svgar"
 
 [lib]
 crate-type = ["cdylib"]
