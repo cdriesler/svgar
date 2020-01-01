@@ -1,0 +1,24 @@
+{
+    "name": "rust-wasm-ts-module",
+    "version": "1.0.0",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "npm run build:wasm && npm run build:ts",
+        "build:ts": "tsc",
+        "build:wasm": "wasm-pack build --target bundler --out-dir src/wasm",
+        "postbuild": "cpy src/wasm/*.wasm dist/wasm",
+        "test": "npm run test:ts && npm run test:wasm",
+        "test:ts": "cross-env TS_NODE_PROJECT='tsconfig.test.json' mocha -r ts-node/register src/**/*.spec.ts",
+        "test:wasm": "cargo test"
+    },
+    "devDependencies": {
+        "@types/chai": "^4.2.7",
+        "@types/mocha": "^5.2.7",
+        "chai": "^4.2.0",
+        "cpy-cli": "^3.0.0",
+        "cross-env": "^6.0.3",
+        "mocha": "^6.2.2",
+        "ts-node": "^8.5.4",
+        "typescript": "^3.7.4"
+    }
+}
