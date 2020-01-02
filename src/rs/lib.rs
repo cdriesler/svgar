@@ -1,6 +1,7 @@
 extern crate wasm_bindgen;
 
 use wasm_bindgen::prelude::*;
+// use std::num;
 
 #[wasm_bindgen]
 extern "C" {
@@ -19,20 +20,34 @@ impl Point3d {
         return Point3d { x: x, y: y, z: z }
     }
 
+    pub fn add(a: &Point3d, b: &Point3d) -> Point3d {
+        return Point3d { x: a.x + b.x, y: a.y + b.y, z: a.z + b.z };
+    }
+
+    pub fn dot(a: &Point3d, b: &Point3d) -> f64 {
+        return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
+    }
+
+    pub fn scale(vec: &Point3d, factor: f64) -> Point3d {
+        let x = vec.x * factor;
+        let y = vec.y * factor;
+        let z = vec.z * factor;
+
+        return Point3d { x: x, y: y, z: z };
+    }
+
     pub fn equals(self: &Self, point: &Point3d) -> bool {
         return (self.x == point.x) && (self.y == point.y) && (self.z == point.z);
+    }
+
+    pub fn magnitude(self: &Self) -> f64 {
+        return ((self.x * self.x) + (self.y * self.y) + (self.z * self.z)).sqrt();
     }
 }
 
 #[wasm_bindgen]
 pub fn greet(name: &str) -> std::string::String {
     return format!("Hello, {}!", name);
-}
-
-#[wasm_bindgen]
-pub fn why(x: &str) -> f64 {
-    let my_int = x.parse::<f64>().unwrap();
-    return my_int;
 }
 
 /// Returns a point {x, y, z} projected onto a given plane.
@@ -64,11 +79,25 @@ pub fn why(x: &str) -> f64 {
 /// ```
 #[wasm_bindgen]
 pub fn project(x: f64, y: f64, z: f64, a: f64, b: f64, c: f64, d: f64, e: f64, f: f64) -> Point3d {
-    Point3d { x: x + y + z, y: 2.0, z: 3.0 }
+    let point = Point3d { x: x, y: y, z: z };
+    let normal = Point3d { x: a, y: b, z: c };
+
+    let point_to_origin = Point3d { x: d - x, y: e - y, z: f - z };
+    let dot_normal = Point3d::dot(&point_to_origin, &normal);
+    let magnitude_normal = normal.magnitude();
+    let scale_factor = dot_normal / (magnitude_normal * magnitude_normal);
+
+    let transform = Point3d { x: normal.x * scale_factor, y: normal.y * scale_factor, z: normal.z * scale_factor };
+
+    let projected_point = Point3d::add(&point, &transform);
+
+    return projected_point;
 }
 
 #[cfg(test)]
 mod tests {
+
+    // default test
     
     #[test]
     fn it_works() {
@@ -76,6 +105,8 @@ mod tests {
 
         assert_eq!("Hello, t!", greet("t"));
     }
+
+    // project() tests
 
     #[test]
     fn test_project() {
@@ -89,6 +120,8 @@ mod tests {
         assert!(pt.equals(&target));
     }
 
+    // Point3d::equals() tests
+
     #[test]
     fn test_point3d_equals() {
         use Point3d;
@@ -97,5 +130,80 @@ mod tests {
         let b = Point3d::new(0.0, 0.0, 0.0);
 
         assert!(a.equals(&b));
+    }
+
+    // dot() tests
+
+    #[test]
+    fn zero_vectors() {
+        use Point3d;
+
+        let a = Point3d::new(0.0, 0.0, 0.0);
+        let b = Point3d::new(0.0, 0.0, 0.0);
+
+        let res = Point3d::dot(&a, &b);
+
+        assert_eq!(res, 0.0);
+    }
+
+    #[test]
+    fn unit_vectors() {
+        use Point3d;
+
+        let a = Point3d::new(1.0, 0.0, 0.0);
+        let b = Point3d::new(1.0, 0.0, 0.0);
+
+        let res = Point3d::dot(&a, &b);
+
+        assert_eq!(res, 1.0);
+    }
+
+    #[test]
+    fn random_vectors() {
+        use Point3d;
+
+        let a = Point3d::new(2.0, 3.0, 4.0);
+        let b = Point3d::new(1.0, 2.0, 3.0);
+
+        let res = Point3d::dot(&a, &b);
+
+        assert_eq!(res, 20.0);
+    }
+
+    // Point3d::magnitude() tests
+
+    #[test]
+    fn zero_vector() {
+        use Point3d;
+
+        let a = Point3d::new(0.0, 0.0, 0.0);
+
+        let res = a.magnitude();
+
+        assert_eq!(res, 0.0);
+    }
+
+    #[test]
+    fn unit_vector() {
+        use Point3d;
+        
+        let a = Point3d::new(0.0, 0.0, 1.0);
+
+        let res = a.magnitude();
+
+        assert_eq!(res, 1.0);
+    }
+
+    // Point3d::scale() tests
+
+    #[test]
+    fn do_not_scale() {
+        use Point3d;
+
+        let a = Point3d::new(1.0, 2.0, 3.0);
+
+        let res = Point3d::scale(&a, 1.0);
+
+        assert_eq!(res.x, 1.0);
     }
 }
