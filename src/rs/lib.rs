@@ -1,6 +1,7 @@
 extern crate wasm_bindgen;
 
 use wasm_bindgen::prelude::*;
+use std::fmt;
 // use std::num;
 
 #[wasm_bindgen]
@@ -15,6 +16,12 @@ pub struct Point3d {
     pub z: f64
 }
 
+impl fmt::Display for Point3d {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "({}, {}, {})", self.x, self.y, self.z)
+    }
+}
+
 impl Point3d {
     pub fn new(x: f64, y: f64, z: f64) -> Point3d {
         return Point3d { x: x, y: y, z: z }
@@ -22,6 +29,10 @@ impl Point3d {
 
     pub fn add(a: &Point3d, b: &Point3d) -> Point3d {
         return Point3d { x: a.x + b.x, y: a.y + b.y, z: a.z + b.z };
+    }
+
+    pub fn reverse(vector: &Point3d) -> Point3d {
+        return Point3d { x: vector.x * -1.0, y: vector.y * -1.0, z: vector.z * -1.0}
     }
 
     pub fn dot(a: &Point3d, b: &Point3d) -> f64 {
@@ -36,6 +47,14 @@ impl Point3d {
         return Point3d{ x: x, y: y, z: z };
     }
 
+    pub fn project(vector: &Point3d, to: &Point3d) -> Point3d {
+        let dot = Point3d::dot(vector, to);
+        let magnitude = to.magnitude();
+        let scale_factor = dot / (magnitude * magnitude);
+
+        return Point3d::scale(to, scale_factor);
+    }
+
     pub fn scale(vec: &Point3d, factor: f64) -> Point3d {
         let x = vec.x * factor;
         let y = vec.y * factor;
@@ -46,6 +65,10 @@ impl Point3d {
 
     pub fn equals(self: &Self, point: &Point3d) -> bool {
         return (self.x == point.x) && (self.y == point.y) && (self.z == point.z);
+    }
+
+    pub fn equals_with_tolerance(self: &Self, point: &Point3d, tolerance: f64) -> bool {
+        return ((self.x - point.x).abs() < tolerance) && ((self.y - point.y).abs() < tolerance) && ((self.z - point.z).abs() < tolerance);
     }
 
     pub fn magnitude(self: &Self) -> f64 {
@@ -102,7 +125,7 @@ pub fn project(x: f64, y: f64, z: f64, a: f64, b: f64, c: f64, d: f64, e: f64, f
     return projected_point;
 }
 
-/// Returns a point { x, y, z } projected onto a 3D plane in that plane's 2D coordinate space
+/// Returns a point { x, y, z = 0 } projected onto a 3D plane in that plane's 2D coordinate space
 /// 
 /// # Arguments
 /// 
@@ -121,8 +144,40 @@ pub fn project(x: f64, y: f64, z: f64, a: f64, b: f64, c: f64, d: f64, e: f64, f
 /// * `rotation` - 
 /// 
 #[wasm_bindgen]
-pub fn project_and_remap(x: f64, y: f64, z: f64, a: f64, b: f64, c: f64, d: f64, e: f64, f: f64, rotation: f64) -> Point3d {
-    Point3d { x: 0.0, y: 0.0, z: 0.0 }
+pub fn project_and_remap(x: f64, y: f64, z: f64, a: f64, b: f64, c: f64, d: f64, e: f64, f: f64, _rotation: f64) -> Point3d {
+    let point_in_plane = project(x, y, z, a, b, c, d, e, f);
+
+    // Handle cases where plane is flat
+    if Point3d::new(a, b, c).equals(&Point3d::new(0.0, 0.0, 1.0)) {
+        return Point3d::new(x - d, y - e, 0.0);
+    }
+
+    if Point3d::new(a, b, c).equals(&Point3d::new(0.0, 0.0, -1.0)) {
+        return Point3d::new(x + d, y + e, 0.0);
+    }
+
+    let normal = Point3d::new(a, b, c);
+    let unit_z = Point3d::new(0.0, 0.0, 1.0);
+    let y_plane = Point3d::cross(&normal, &unit_z);
+
+    let y_direction_initial = Point3d::cross(&normal, &y_plane);
+
+    let y_direction = if y_direction_initial.z < 0.0 {
+        Point3d::reverse(&y_direction_initial)
+    } else {
+        y_direction_initial
+    };
+
+    // TODO: Rotate y_direction about normal based on rotation argument
+
+    let x_direction = Point3d::cross(&normal, &y_direction);
+
+    let point = Point3d::new(point_in_plane.x - d, point_in_plane.y - e, point_in_plane.z - f);
+
+    let x = Point3d::project(&point, &x_direction).magnitude();
+    let y = Point3d::project(&point, &y_direction).magnitude();
+
+    return Point3d { x: x, y: y, z: 0.0 };
 }
 
 #[cfg(test)]
@@ -149,6 +204,35 @@ mod tests {
         let target = Point3d::new(5.0, 4.0, 1.0);
 
         assert!(pt.equals(&target));
+    }
+
+    // project_and_remap() tests
+    #[test]
+    fn the_big_one() {
+        use project_and_remap;
+        use Point3d;
+
+        let pt = project_and_remap(5.0, 4.0, 3.0, 0.0, 0.0, 1.0, 1.0, 2.0, 1.5, 0.0);
+
+        //println!("{}", pt);
+
+        let target = Point3d::new(4.0, 2.0, 0.0);
+
+        assert!(pt.equals(&target));
+    }
+
+    #[test]
+    fn values_from_rhino() {
+        use project_and_remap;
+        use Point3d;
+
+        let pt = project_and_remap(9.727794, 85.785782, 42.555986, 0.549634, 0.547786, 0.63074, 9.106581, 87.990335, 39.597263, 0.0);
+
+        //println!("{}", pt);
+
+        let target = Point3d::new(2.0, 3.0, 0.0);
+
+        assert!(pt.equals_with_tolerance(&target, 0.1));
     }
 
     // Point3d::equals() tests
@@ -241,7 +325,7 @@ mod tests {
     // Point3d::cross() tests
 
     #[test]
-    fn random_vectors() {
+    fn web_vectors() {
         use Point3d;
 
         let a = Point3d::new(2.0, 3.0, 4.0);
@@ -249,6 +333,21 @@ mod tests {
 
         let res = Point3d::cross(&a, &b);
         let target = Point3d::new(-3.0, 6.0, -3.0);
+
+        assert!(res.equals(&target));
+    }
+
+    // Point3d::project() tests
+
+    #[test]
+    fn two_vectors() {
+        use Point3d;
+
+        let a = Point3d::new(1.0, 4.0, 0.0);
+        let b = Point3d::new (4.0, 2.0, 4.0);
+
+        let res = Point3d::project(&a, &b);
+        let target = Point3d::new((4 as f64)/(3 as f64), (2 as f64)/(3 as f64), (4 as f64)/(3 as f64));
 
         assert!(res.equals(&target));
     }
