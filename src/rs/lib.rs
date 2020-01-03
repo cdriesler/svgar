@@ -137,11 +137,11 @@ pub fn project(x: f64, y: f64, z: f64, a: f64, b: f64, c: f64, d: f64, e: f64, f
 /// * `b` - y component of plane normal
 /// * `c` - z component of plane normal
 /// 
-/// * `d` - x coordinate of a point on the plane
-/// * `e` - y coordinate of a point on the plane
-/// * `f` - z coordinate of a point on the plane
+/// * `d` - x coordinate of the given plane's origin
+/// * `e` - y coordinate of the given plane's origin
+/// * `f` - z coordinate of the given plane's origin
 /// 
-/// * `rotation` - 
+/// * `rotation` - clockwise rotation (in degrees) of default basis about the plane's normal
 /// 
 #[wasm_bindgen]
 pub fn project_and_remap(x: f64, y: f64, z: f64, a: f64, b: f64, c: f64, d: f64, e: f64, f: f64, _rotation: f64) -> Point3d {
@@ -174,8 +174,19 @@ pub fn project_and_remap(x: f64, y: f64, z: f64, a: f64, b: f64, c: f64, d: f64,
 
     let point = Point3d::new(point_in_plane.x - d, point_in_plane.y - e, point_in_plane.z - f);
 
-    let x = Point3d::project(&point, &x_direction).magnitude();
-    let y = Point3d::project(&point, &y_direction).magnitude();
+    let x_component = Point3d::project(&point, &x_direction);
+    let x = if Point3d::dot(&x_component, &x_direction) >= 0.0 {
+        x_component.magnitude()
+    } else {
+        x_component.magnitude() * -1.0
+    };
+
+    let y_component = Point3d::project(&point, &y_direction);
+    let y = if Point3d::dot(&y_component, &y_direction) >= 0.0 {
+        y_component.magnitude()
+    } else {
+        y_component.magnitude() * -1.0
+    };
 
     return Point3d { x: x, y: y, z: 0.0 };
 }
@@ -208,7 +219,7 @@ mod tests {
 
     // project_and_remap() tests
     #[test]
-    fn the_big_one() {
+    fn flat_planes() {
         use project_and_remap;
         use Point3d;
 
@@ -217,6 +228,32 @@ mod tests {
         //println!("{}", pt);
 
         let target = Point3d::new(4.0, 2.0, 0.0);
+
+        assert!(pt.equals(&target));
+    }
+
+    #[test]
+    fn vertical_plane_looking_towards() {
+        use project_and_remap;
+        use Point3d;
+
+        let pt = project_and_remap(2.0, 4.0, 4.0, 0.0, 1.0, 0.0, 1.0, -5.0, 3.0, 0.0);
+
+        let target = Point3d::new(1.0, 1.0, 0.0);
+
+        assert!(pt.equals(&target));
+    }
+
+    #[test]
+    fn vertical_plane_looking_away() {
+        use project_and_remap;
+        use Point3d;
+
+        let pt = project_and_remap(2.0, 4.0, 4.0, 0.0, -1.0, 0.0, 1.0, -5.0, 3.0, 0.0);
+
+        //println!("{}", pt);
+
+        let target = Point3d::new(-1.0, 1.0, 0.0);
 
         assert!(pt.equals(&target));
     }
