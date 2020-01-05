@@ -20,5 +20,8 @@
         "mocha": "^6.2.2",
         "ts-node": "^8.5.4",
         "typescript": "^3.7.4"
+    },
+    "dependencies": {
+        "rhino3dm": "^0.8.1"
     }
 }
