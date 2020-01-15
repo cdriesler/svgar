@@ -1,11 +1,11 @@
-import Cream from './CreamService';
-import { expect } from 'chai';
-import 'mocha';
+// import Cream from './CreamService';
+// import { expect } from 'chai';
+// import 'mocha';
 
-describe("when using proxies", () => {
+// describe("when using proxies", () => {
 
-    it("should call proxy code", () => {
-        Cream.doSomething();
-    });
+//     it("should call proxy code", () => {
+//         Cream.doSomething();
+//     });
 
-});
+// });
