@@ -45,14 +45,18 @@ export default class SvgarCube {
      */
     public async initialize(): Promise<boolean> {
         try {
-            const rhino = await rhino3dm();
-            const cream = await import('./../wasm/cream');
+            //this.rhinoModule = await import('./../wasm/rhino3dm')
+            this.creamModule = await import('./../wasm/cream');
         } catch (e) {
             console.log(e);
             return false;
         }
+        
+        return (this.creamModule !== undefined);
+    }
 
-        return (this.rhinoModule !== undefined && this.creamModule !== undefined);
+    public pingWasm(): string {
+        return this.creamModule.greet('wasm');
     }
 
     private onCameraChange(): void {
