@@ -5,7 +5,16 @@ import Element from './SvgarElement';
 export default class SvgarCube {
     
     public camera: Camera;
-    public elements: Element[];
+    private _elements: Element[];
+    get elements(): Element[] {
+        console.log('from getter');
+        return this._elements;
+    }
+    set elements(value: Element[]) {
+        console.log('from setter');
+        console.log(`iterating over ${value.length} elements`);
+        this._elements = value;
+    }
 
     private rhinoModule: undefined | RhinoModule;
     private creamModule: undefined | any;
@@ -13,6 +22,17 @@ export default class SvgarCube {
     constructor() {
         this.camera = new Camera(this.onCameraChange);
         this.elements = [];
+        console.log('constructor done')
+
+        Object.defineProperty(this._elements, "push", {
+            enumerable: false,
+            configurable: false,
+            writable: false,
+            value: (element: Element) => {
+                this._elements[this._elements.length] = element;
+                console.log('from array push setter')
+            }
+        })
     }
 
     /**
