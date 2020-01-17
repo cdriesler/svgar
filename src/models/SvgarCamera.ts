@@ -3,8 +3,22 @@ import { Point3f } from '../primitives/Point3f';
 
 export default class SvgarCamera {
 
-    public position: Point3f;
-    public target: Point3f;
+    private _position: Point3f;
+    set position(value: Point3f) {
+        this._position = value;
+        this.updateNormal();
+    }
+    get position(): Point3f {
+        return this._position;
+    }
+    private _target: Point3f;
+    set target(value: Point3f) {
+        this._target = value;
+        this.updateNormal()
+    }
+    get target(): Point3f {
+        return this._target;
+    }
     public direction: Point3f;
     public extents: { x: Interval, y: Interval }; 
     private onChange: () => void;
@@ -25,9 +39,18 @@ export default class SvgarCamera {
         }
 
         this.onChange = hook;
+        hook();
     }
 
     private updateNormal(): void {
+        if(this.position === undefined || this.target === undefined) {
+            this.direction = {
+                x: 0,
+                y: 0,
+                z: -1
+            }
+            return;
+        }
         this.direction = {
             x: this.target.x - this.position.x,
             y: this.target.y - this.position.y,

@@ -14,6 +14,7 @@ export default class SvgarCube {
         console.log('from setter');
         value.forEach(el => {
             el.creamModule = this.creamModule;
+            el.camera = this.camera;
         })
         this._elements = value;
     }
@@ -22,8 +23,8 @@ export default class SvgarCube {
     private creamModule: undefined | any;
     
     constructor() {
-        this.camera = new Camera(this.onCameraChange);
         this.elements = [];
+        this.camera = new Camera(this.onCameraChange.bind(this));
         console.log('constructor done')
 
         Object.defineProperty(this._elements, "push", {
@@ -32,6 +33,7 @@ export default class SvgarCube {
             writable: false,
             value: (element: Element) => {
                 element.creamModule = this.creamModule;
+                element.camera = this.camera;
                 this._elements[this._elements.length] = element;
                 console.log('from array push setter')
             }
@@ -66,7 +68,14 @@ export default class SvgarCube {
         return this.elements.map(el => el.compile()).join('\n');
     }
 
+    public computeAll(): void {
+        this.elements.forEach(el => el.project())
+    }
+
     private onCameraChange(): void {
         console.log('after change')
+        // this.elements.forEach(el => {
+        //     el.project();
+        // })
     }
 }
