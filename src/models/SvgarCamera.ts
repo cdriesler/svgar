@@ -5,12 +5,14 @@ export default class SvgarCamera {
 
     public position: Point3f;
     public target: Point3f;
+    public direction: Point3f;
     public extents: { x: Interval, y: Interval }; 
     private onChange: () => void;
 
     constructor(hook: () => void) {
         this.position = { x: 0, y: 0, z: 0 };
         this.target = { x: 0, y: 0, z: -1 };
+        this.updateNormal();
         this.extents = {
             x: {
                 start: -5,
@@ -23,6 +25,14 @@ export default class SvgarCamera {
         }
 
         this.onChange = hook;
+    }
+
+    private updateNormal(): void {
+        this.direction = {
+            x: this.target.x - this.position.x,
+            y: this.target.y - this.position.y,
+            z: this.target.z - this.position.z
+        }
     }
 
     public pan(x: number, y: number): void {

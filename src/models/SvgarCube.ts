@@ -12,7 +12,9 @@ export default class SvgarCube {
     }
     set elements(value: Element[]) {
         console.log('from setter');
-        console.log(`iterating over ${value.length} elements`);
+        value.forEach(el => {
+            el.creamModule = this.creamModule;
+        })
         this._elements = value;
     }
 
@@ -29,6 +31,7 @@ export default class SvgarCube {
             configurable: false,
             writable: false,
             value: (element: Element) => {
+                element.creamModule = this.creamModule;
                 this._elements[this._elements.length] = element;
                 console.log('from array push setter')
             }
@@ -57,6 +60,10 @@ export default class SvgarCube {
 
     public pingWasm(): string {
         return this.creamModule.greet('wasm');
+    }
+
+    public compile(): string {
+        return this.elements.map(el => el.compile()).join('\n');
     }
 
     private onCameraChange(): void {
