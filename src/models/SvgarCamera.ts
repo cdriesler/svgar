@@ -24,6 +24,7 @@ export default class SvgarCamera {
     private onChange: () => void;
 
     constructor(hook: () => void) {
+        this.onChange = hook;
         this.position = { x: 0, y: 0, z: 0 };
         this.target = { x: 0, y: 0, z: -1 };
         this.updateNormal();
@@ -38,8 +39,7 @@ export default class SvgarCamera {
             }
         }
 
-        this.onChange = hook;
-        hook();
+        
     }
 
     private updateNormal(): void {
@@ -56,6 +56,7 @@ export default class SvgarCamera {
             y: this.target.y - this.position.y,
             z: this.target.z - this.position.z
         }
+        this.onChange();
     }
 
     public pan(x: number, y: number): void {

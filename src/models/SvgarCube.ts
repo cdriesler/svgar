@@ -73,7 +73,7 @@ export default class SvgarCube {
     }
 
     private onCameraChange(): void {
-        console.log('after change')
+        console.log(this.elements.length);
         // this.elements.forEach(el => {
         //     el.project();
         // })

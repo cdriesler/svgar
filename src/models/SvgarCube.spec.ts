@@ -19,4 +19,11 @@ describe('given a new svgar cube', () => {
         console.log('re-assigning elements');
         cube.elements = [new SvgarElement(), new SvgarElement(), new SvgarElement()];
     })
+
+    it('should share cube context with camera object', () => {
+        const cube = new SvgarCube();
+        cube.elements.push(new SvgarElement());
+        console.log(cube.camera);
+        // cube.camera.position = {x: 1, y: 1, z: 1}
+    })
 })
