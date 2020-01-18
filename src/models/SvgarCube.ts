@@ -7,37 +7,34 @@ export default class SvgarCube {
     public camera: Camera;
     private _elements: Element[];
     get elements(): Element[] {
-        console.log('from getter');
         return this._elements;
     }
     set elements(value: Element[]) {
-        console.log('from setter');
         value.forEach(el => {
             el.creamModule = this.creamModule;
-            el.camera = this.camera;
         })
         this._elements = value;
     }
+
+    public svg: string = '';
 
     private rhinoModule: undefined | RhinoModule;
     private creamModule: undefined | any;
     
     constructor() {
         this.elements = [];
-        this.camera = new Camera(this.onCameraChange.bind(this));
+        this.camera = new Camera();
         console.log('constructor done')
 
         Object.defineProperty(this._elements, "push", {
             enumerable: false,
             configurable: false,
             writable: false,
-            value: (element: Element) => {
-                element.creamModule = this.creamModule;
-                element.camera = this.camera;
-                this._elements[this._elements.length] = element;
-                console.log('from array push setter')
+            value: (el: Element) => {
+                el.creamModule = this.creamModule;
+                this._elements[this._elements.length] = el;
             }
-        })
+        });
     }
 
     /**
@@ -64,18 +61,52 @@ export default class SvgarCube {
         return this.creamModule.greet('wasm');
     }
 
-    public compile(): string {
-        return this.elements.map(el => el.compile()).join('\n');
-    }
+    // Convert coordinates to svg
+    public render(w: number, h: number): string {
 
-    public computeAll(): void {
-        this.elements.forEach(el => el.project())
-    }
+        const camera = this.camera;
 
-    private onCameraChange(): void {
-        console.log(this.elements.length);
-        // this.elements.forEach(el => {
-        //     el.project();
-        // })
+        function toSvg(coordinates: number[]): string {
+            if (coordinates.length < 12) return '';
+
+            const x = camera.extents.w;
+            const y = camera.extents.h;
+
+            const xMax = x / 2;
+            const xMin = x / -2;
+            const yMax = y / 2;
+            const yMin = y / -2;
+
+            const c = coordinates;
+
+            function normalize(min: number, max: number, value: number): number {
+                return (value - min) / (max - min);
+            }
+
+            function toX(value: number): number {
+                return normalize(xMin, xMax, value) * w;
+            }
+
+            function toY(value: number): number {
+                return h - (normalize(yMin, yMax, value) * h);
+            }
+
+            var d: string[] = [`M ${toX(c[0])} ${toY(c[1])}`];
+
+            for (let i = 0; i < coordinates.length; i+=12) {
+                d.push(`C ${toX(c[i + 3])} ${toY(c[i + 4])} ${toX(c[i + 6])} ${toY(c[i + 7])} ${toX(c[i + 9])} ${toY(c[i + 10])}`);
+            }
+            return `<path d="${d.join(' ')}" stroke="black" fill="none" stroke-width="1px" />`;
+        }
+
+        const svg = [
+            `<svg version="1.1" width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">`,
+            this.elements.map(el => toSvg(el.compile(camera))).join('\n'),
+            `</svg>`
+        ].join('\n');
+
+        this.svg = svg;
+
+        return svg;
     }
 }

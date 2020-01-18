@@ -11,6 +11,7 @@ export default class LineCurve implements SvgarGeometry {
         this.to = to;
     }
 
+    // Returns svgar-style coordinates in 3D space
     public compile(): number[] {
         const from = this.from;
         const to = this.to;

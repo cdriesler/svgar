@@ -20,26 +20,12 @@ export default class SvgarCamera {
         return this._target;
     }
     public direction: Point3f;
-    public extents: { x: Interval, y: Interval }; 
-    private onChange: () => void;
+    public extents: { w: number, h: number }; 
 
-    constructor(hook: () => void) {
-        this.onChange = hook;
+    constructor() {
         this.position = { x: 0, y: 0, z: 0 };
         this.target = { x: 0, y: 0, z: -1 };
-        this.updateNormal();
-        this.extents = {
-            x: {
-                start: -5,
-                end: 5
-            },
-            y: {
-                start: -5,
-                end: 5
-            }
-        }
-
-        
+        this.extents = { w: 10, h: 10 };        
     }
 
     private updateNormal(): void {
@@ -56,12 +42,14 @@ export default class SvgarCamera {
             y: this.target.y - this.position.y,
             z: this.target.z - this.position.z
         }
-        this.onChange();
     }
 
     public pan(x: number, y: number): void {
         console.log('from camera');
-        this.onChange();
+    }
+
+    public move(x: number, y: number, z: number): void {
+
     }
 
 }
