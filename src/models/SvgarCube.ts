@@ -96,7 +96,7 @@ export default class SvgarCube {
             for (let i = 0; i < coordinates.length; i+=12) {
                 d.push(`C ${toX(c[i + 3])} ${toY(c[i + 4])} ${toX(c[i + 6])} ${toY(c[i + 7])} ${toX(c[i + 9])} ${toY(c[i + 10])}`);
             }
-            return `<path d="${d.join(' ')}" stroke="black" fill="none" stroke-width="1px" />`;
+            return `<path d="${d.join(' ')}" stroke="black" fill="none" stroke-linecap="round" stroke-width="0.7mm" />`;
         }
 
         const svg = [
