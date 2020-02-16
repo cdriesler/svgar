@@ -1,0 +1,30 @@
+name: test
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.14]
+        rust-version: [stable]
+  
+    steps:
+    - uses: actions/checkout@v1
+    - name: Initialize node.js 
+      uses: actions/setup-node.js
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Initialize rust
+      uses: hecrj/setup-rust-action@v1
+      with:
+        rust-version: ${{ matrix.rust-version }}
+    - name: Install dependencies
+      run: npm install
+    - name: Run javascript tests
+      run: npm run test:ts
+    - name: Run rust tests
+      run: npm run test:wasm
