@@ -7,13 +7,13 @@ describe('Hello function', () => {
     expect(result).to.equal('Howdy, world!');
   });
 
-  // it('should run wasm', (done) => {
-  //   SomeClass.wasmGreet('wasm').then(x => {
-  //     expect(x).to.equal('Hello, wasm!');
-  //     done();
-  //   })
-  //   .catch(err => {
-  //     done(err);
-  //   })
-  // });
+  it('should run wasm', (done) => {
+    SomeClass.wasmGreet('wasm').then(x => {
+      expect(x).to.equal('Hello, wasm!');
+      done();
+    })
+    .catch(err => {
+      done(err);
+    })
+  });
 });
