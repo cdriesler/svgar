@@ -24,5 +24,7 @@ jobs:
         rust-version: ${{ matrix.rust-version }}
     - name: Install dependencies
       run: npm install
+    - name: Install wasm-pack
+      run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
     - name: Build for deploy
       run: npm run build
