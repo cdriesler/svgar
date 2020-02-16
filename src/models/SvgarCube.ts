@@ -1,4 +1,4 @@
-import rhino3dm, { RhinoModule } from 'rhino3dm';
+import rhino3dm from 'rhino3dm';
 import Camera from './SvgarCamera';
 import Element from './SvgarElement';
 
@@ -18,7 +18,7 @@ export default class SvgarCube {
 
     public svg: string = '';
 
-    private rhinoModule: undefined | RhinoModule;
+    private rhinoModule: undefined | any;
     private creamModule: undefined | any;
     
     constructor() {
