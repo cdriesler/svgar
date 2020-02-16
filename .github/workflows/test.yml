@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Initialize node.js 
-      uses: actions/setup-node.js
+      uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
     - name: Initialize rust
