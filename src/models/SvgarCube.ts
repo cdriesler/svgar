@@ -24,7 +24,6 @@ export default class SvgarCube {
     constructor() {
         this.elements = [];
         this.camera = new Camera();
-        console.log('constructor done')
 
         Object.defineProperty(this._elements, "push", {
             enumerable: false,
@@ -46,15 +45,18 @@ export default class SvgarCube {
      * @returns `true` on successful load
      */
     public async initialize(): Promise<boolean> {
-        try {
-            //this.rhinoModule = await import('./../wasm/rhino3dm')
-            this.creamModule = await import('./../wasm/cream');
-        } catch (e) {
-            console.log(e);
-            return false;
-        }
-        
-        return (this.creamModule !== undefined);
+
+        this.creamModule = await import('./../wasm/cream');
+
+        rhino3dm().then(rhino => {
+            this.rhinoModule = rhino;
+        });
+
+        // ( Chuck ) Current version of rhino3dm module "promise" does not resolve. Terrible temp workaround below.
+        const wait = new Promise(resolve => setTimeout(resolve, 1000));
+        await wait;
+
+        return this.creamModule != undefined && this.rhinoModule != undefined;
     }
 
     public pingWasm(): string {

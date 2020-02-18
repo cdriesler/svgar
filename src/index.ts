@@ -1,6 +1,11 @@
-import SvgarCube from './models/SvgarCube';
-import SvgarElement from './models/SvgarElement';
-import SvgarMaterial from './models/SvgarMaterial';
+import Cube from './models/SvgarCube';
+import Element from './models/SvgarElement';
+import Material from './models/SvgarMaterial';
+
 import LineCurve from './geometry/svgar/LineCurve';
 
-export { SvgarCube, SvgarElement, SvgarMaterial, LineCurve }
+const Geometry = {
+    LineCurve: LineCurve
+}
+
+export { Cube, Element, Material, Geometry }
