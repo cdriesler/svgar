@@ -192,41 +192,37 @@ pub fn project_and_remap(x: f64, y: f64, z: f64, a: f64, b: f64, c: f64, d: f64,
 }
 
 #[cfg(test)]
-mod tests {
+mod project {
 
-    // default test
-    
-    #[test]
-    fn it_works() {
-        use greet;
-
-        assert_eq!("Hello, t!", greet("t"));
-    }
-
-    // project() tests
+    use project;
+    use Point3d;
 
     #[test]
-    fn test_project() {
-        use project;
-        use Point3d;
-
+    fn arbitrary_point_to_world_xy() {
         let pt = project(5.0, 4.0, 3.0, 0.0, 0.0, 1.0, 3.0, 2.0, 1.0);
-
         let target = Point3d::new(5.0, 4.0, 1.0);
 
         assert!(pt.equals(&target));
     }
 
-    // project_and_remap() tests
+    #[test]
+    fn arbitrary_point_in_plane() {
+        let pt = project(5.0, 4.0, 1.0, 0.0, 0.0, 1.0, 3.0, 2.0, 1.0);
+        let target = Point3d::new(5.0, 4.0, 1.0);
+
+        assert!(pt.equals(&target));
+    }
+}
+
+#[cfg(test)]
+mod project_and_remap {
+    
+    use project_and_remap;
+    use Point3d;
+
     #[test]
     fn flat_planes() {
-        use project_and_remap;
-        use Point3d;
-
         let pt = project_and_remap(5.0, 4.0, 3.0, 0.0, 0.0, 1.0, 1.0, 2.0, 1.5, 0.0);
-
-        //println!("{}", pt);
-
         let target = Point3d::new(4.0, 2.0, 0.0);
 
         assert!(pt.equals(&target));
@@ -234,11 +230,7 @@ mod tests {
 
     #[test]
     fn vertical_plane_looking_towards() {
-        use project_and_remap;
-        use Point3d;
-
         let pt = project_and_remap(2.0, 4.0, 4.0, 0.0, 1.0, 0.0, 1.0, -5.0, 3.0, 0.0);
-
         let target = Point3d::new(1.0, 1.0, 0.0);
 
         assert!(pt.equals(&target));
@@ -246,13 +238,7 @@ mod tests {
 
     #[test]
     fn vertical_plane_looking_away() {
-        use project_and_remap;
-        use Point3d;
-
         let pt = project_and_remap(2.0, 4.0, 4.0, 0.0, -1.0, 0.0, 1.0, -5.0, 3.0, 0.0);
-
-        //println!("{}", pt);
-
         let target = Point3d::new(-1.0, 1.0, 0.0);
 
         assert!(pt.equals(&target));
@@ -260,36 +246,32 @@ mod tests {
 
     #[test]
     fn values_from_rhino() {
-        use project_and_remap;
-        use Point3d;
-
         let pt = project_and_remap(9.727794, 85.785782, 42.555986, 0.549634, 0.547786, 0.63074, 9.106581, 87.990335, 39.597263, 0.0);
-
-        //println!("{}", pt);
-
         let target = Point3d::new(2.0, 3.0, 0.0);
 
         assert!(pt.equals_with_tolerance(&target, 0.1));
     }
+}
+
+#[cfg(test)]
+mod point3d {
+
+    use Point3d;
 
     // Point3d::equals() tests
 
     #[test]
     fn test_point3d_equals() {
-        use Point3d;
-
         let a = Point3d::new(0.0, 0.0, 0.0);
         let b = Point3d::new(0.0, 0.0, 0.0);
 
         assert!(a.equals(&b));
     }
 
-    // dot() tests
+    // Point3d::dot() tests
 
     #[test]
     fn zero_vectors() {
-        use Point3d;
-
         let a = Point3d::new(0.0, 0.0, 0.0);
         let b = Point3d::new(0.0, 0.0, 0.0);
 
@@ -300,8 +282,6 @@ mod tests {
 
     #[test]
     fn unit_vectors() {
-        use Point3d;
-
         let a = Point3d::new(1.0, 0.0, 0.0);
         let b = Point3d::new(1.0, 0.0, 0.0);
 
@@ -312,8 +292,6 @@ mod tests {
 
     #[test]
     fn random_vectors() {
-        use Point3d;
-
         let a = Point3d::new(2.0, 3.0, 4.0);
         let b = Point3d::new(1.0, 2.0, 3.0);
 
@@ -326,8 +304,6 @@ mod tests {
 
     #[test]
     fn zero_vector() {
-        use Point3d;
-
         let a = Point3d::new(0.0, 0.0, 0.0);
 
         let res = a.magnitude();
@@ -337,8 +313,6 @@ mod tests {
 
     #[test]
     fn unit_vector() {
-        use Point3d;
-        
         let a = Point3d::new(0.0, 0.0, 1.0);
 
         let res = a.magnitude();
@@ -350,8 +324,6 @@ mod tests {
 
     #[test]
     fn do_not_scale() {
-        use Point3d;
-
         let a = Point3d::new(1.0, 2.0, 3.0);
 
         let res = Point3d::scale(&a, 1.0);
@@ -363,8 +335,6 @@ mod tests {
 
     #[test]
     fn web_vectors() {
-        use Point3d;
-
         let a = Point3d::new(2.0, 3.0, 4.0);
         let b = Point3d::new(5.0, 6.0, 7.0);
 
@@ -378,8 +348,6 @@ mod tests {
 
     #[test]
     fn two_vectors() {
-        use Point3d;
-
         let a = Point3d::new(1.0, 4.0, 0.0);
         let b = Point3d::new (4.0, 2.0, 4.0);
 
