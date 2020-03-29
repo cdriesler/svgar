@@ -23,6 +23,6 @@
         "typescript": "^3.7.4"
     },
     "dependencies": {
-        "rhino3dm": "^0.8.1"
+        "rhino3dm": "^0.11.0"
     }
 }
