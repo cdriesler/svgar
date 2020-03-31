@@ -82,6 +82,15 @@ impl Point3d {
     pub fn magnitude(self: &Self) -> f64 {
         return ((self.x * self.x) + (self.y * self.y) + (self.z * self.z)).sqrt();
     }
+
+    pub fn normalize(self: &Self) -> Point3d {
+        let magnitude = self.magnitude();
+        let x = self.x / magnitude;
+        let y = self.y / magnitude;
+        let z = self.z / magnitude;
+
+        return Point3d::new(x, y, z);
+    }
 }
 
 #[wasm_bindgen]
@@ -237,7 +246,7 @@ pub fn distance_to_projection(x: f64, y: f64, z: f64, a: f64, b: f64, c: f64, d:
     print!("{}", projected_point);
 
     let distance = point.distance_to(&projected_point);
-    let direction = Point3d::add(&projected_point, &Point3d::reverse(&point));
+    let direction = Point3d::add(&Point3d::reverse(&projected_point), &point).normalize();
     let alignment = Point3d::dot(&normal, &direction);
 
     return distance * alignment;
@@ -247,7 +256,6 @@ pub fn distance_to_projection(x: f64, y: f64, z: f64, a: f64, b: f64, c: f64, d:
 mod distance_to_projection {
 
     use distance_to_projection;
-    use Point3d;
 
     #[test]
     fn point_directly_above() {
