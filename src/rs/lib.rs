@@ -199,6 +199,78 @@ pub fn project_and_remap(x: f64, y: f64, z: f64, a: f64, b: f64, c: f64, d: f64,
     return Point3d { x: x, y: y, z: 0.0 };
 }
 
+/// Returns the numerical distance between a given point and its projection perpendicular to a given plane.
+/// Result will be positive if projection is in opposite direction of normal ('above' the plane).
+/// Otherwise, it will be negative.
+/// 
+/// # Arguments
+/// 
+/// * `x` - x coordinate of point to project
+/// * `y` - y coordinate of point to project
+/// * `z` - z coordinate of point to project
+/// 
+/// * `a` - x component of plane normal
+/// * `b` - y component of plane normal
+/// * `c` - z component of plane normal
+/// 
+/// * `d` - x coordinate of the given plane's origin
+/// * `e` - y coordinate of the given plane's origin
+/// * `f` - z coordinate of the given plane's origin
+/// 
+/// # Examples
+/// 
+/// `distance_to_projection(2.0, 3.0, 5.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0)`
+/// returns 2.0
+/// 
+/// `distance_to_projection(2.0, 3.0, 1.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0)`
+/// returns -2.0
+/// 
+/// `distance_to_projection(2.0, 3.0, 1.0, 0.0, 0.0, -1.0, 2.0, 3.0, 3.0)`
+/// returns 2.0
+/// 
+#[wasm_bindgen]
+pub fn distance_to_projection(x: f64, y: f64, z: f64, a: f64, b: f64, c: f64, d: f64, e: f64, f: f64) -> f64 {
+    let point = Point3d::new(x, y, z);
+    let normal = Point3d::new(a, b, c);
+    let projected_point = project(x, y, z, a, b, c, d, e, f);
+
+    print!("{}", projected_point);
+
+    let distance = point.distance_to(&projected_point);
+    let direction = Point3d::add(&projected_point, &Point3d::reverse(&point));
+    let alignment = Point3d::dot(&normal, &direction);
+
+    return distance * alignment;
+}
+
+#[cfg(test)]
+mod distance_to_projection {
+
+    use distance_to_projection;
+    use Point3d;
+
+    #[test]
+    fn point_directly_above() {
+        let result = distance_to_projection(2.0, 3.0, 5.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0);
+
+        assert_eq!(result, 2.0);
+    }
+
+    #[test]
+    fn point_directly_below() {
+        let result = distance_to_projection(2.0, 3.0, 1.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0);
+
+        assert_eq!(result, -2.0);
+    }
+
+    #[test]
+    fn point_directly_below_flipped() {
+        let result = distance_to_projection(2.0, 3.0, 1.0, 0.0, 0.0, -1.0, 2.0, 3.0, 3.0);
+
+        assert_eq!(result, 2.0);
+    }
+}
+
 #[cfg(test)]
 mod project {
 
