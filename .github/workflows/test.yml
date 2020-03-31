@@ -3,13 +3,12 @@ name: test
 on: [push]
 
 jobs:
-  test:
+  test-rs:
 
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [12.14]
         rust-version: [stable]
   
     steps:
@@ -24,6 +23,26 @@ jobs:
       run: npm run build:node
     - name: Run rust tests
       run: npm run test:wasm
+  
+  test-ts:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.14]
+        rust-version: [stable]
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Initialize rust
+      uses: hecrj/setup-rust-action@v1
+      with:
+        rust-version: ${{ matrix.rust-version }}
+    - name: Install wasm-pack
+      run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+    - name: Build wasm for tests
+      run: npm run build:node
     - name: Initialize node.js 
       uses: actions/setup-node@v1
       with:
