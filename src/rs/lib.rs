@@ -63,6 +63,14 @@ impl Point3d {
         return Point3d { x: x, y: y, z: z };
     }
 
+    pub fn distance_to(self: &Self, point: &Point3d) -> f64 {
+        let x = (point.x - self.x).powf(2.0);
+        let y = (point.y - self.y).powf(2.0);
+        let z = (point.z - self.z).powf(2.0);
+
+        return (x + y + z).sqrt();
+    }
+
     pub fn equals(self: &Self, point: &Point3d) -> bool {
         return (self.x == point.x) && (self.y == point.y) && (self.z == point.z);
     }
@@ -355,5 +363,37 @@ mod point3d {
         let target = Point3d::new((4 as f64)/(3 as f64), (2 as f64)/(3 as f64), (4 as f64)/(3 as f64));
 
         assert!(res.equals(&target));
+    }
+
+    // Point3d::distanceTo() tests
+
+    #[test]
+    fn origin_to_unit_point() {
+        let a = Point3d::new(0.0, 0.0, 0.0);
+        let b = Point3d::new(1.0, 0.0, 0.0);
+
+        let res = a.distance_to(&b);
+
+        assert_eq!(res, 1.0);
+    }
+
+    #[test]
+    fn origin_to_first_sector() {
+        let a = Point3d::new(0.0, 0.0, 0.0);
+        let b = Point3d::new(1.0, 1.0, 0.0);
+
+        let res = a.distance_to(&b);
+
+        assert!((res - 2.0f64.sqrt()).abs() < 0.1);
+    }
+
+    #[test]
+    fn origin_to_third_sector() {
+        let a = Point3d::new(0.0, 0.0, 0.0);
+        let b = Point3d::new(-1.0, -1.0, 0.0);
+
+        let res = a.distance_to(&b);
+
+        assert!((res - 2.0f64.sqrt()).abs() < 0.1);
     }
 }
