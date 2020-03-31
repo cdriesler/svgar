@@ -10,6 +10,11 @@ extern "C" {
 }
 
 #[wasm_bindgen]
+pub fn greet(name: &str) -> std::string::String {
+    return format!("Hello, {}!", name);
+}
+
+#[wasm_bindgen]
 pub struct Point3d {
     pub x: f64,
     pub y: f64,
@@ -90,254 +95,6 @@ impl Point3d {
         let z = self.z / magnitude;
 
         return Point3d::new(x, y, z);
-    }
-}
-
-#[wasm_bindgen]
-pub fn greet(name: &str) -> std::string::String {
-    return format!("Hello, {}!", name);
-}
-
-/// Returns a point { x, y, z } projected onto a given plane.
-///
-/// # Arguments
-///
-/// * `x` - x coordinate of point to project
-/// * `y` - y coordinate of point to project
-/// * `z` - z coordinate of point to project
-/// 
-/// * `a` - x component of plane normal
-/// * `b` - y component of plane normal
-/// * `c` - z component of plane normal
-/// 
-/// * `d` - x coordinate of a point on the plane
-/// * `e` - y coordinate of a point on the plane
-/// * `f` - z coordinate of a point on the plane
-/// 
-/// # Returns
-/// 
-/// * Point3d { x: f64, y: f64, z: f64 }
-/// 
-/// Note: The returned coordinates are in world coordinate space.
-///
-/// # Example
-///
-/// ```
-/// Nothing yet
-/// ```
-#[wasm_bindgen]
-pub fn project(x: f64, y: f64, z: f64, a: f64, b: f64, c: f64, d: f64, e: f64, f: f64) -> Point3d {
-    let point = Point3d { x: x, y: y, z: z };
-    let normal = Point3d { x: a, y: b, z: c };
-
-    let point_to_origin = Point3d { x: d - x, y: e - y, z: f - z };
-    let dot_normal = Point3d::dot(&point_to_origin, &normal);
-    let magnitude_normal = normal.magnitude();
-    let scale_factor = dot_normal / (magnitude_normal * magnitude_normal);
-
-    let transform = Point3d { x: normal.x * scale_factor, y: normal.y * scale_factor, z: normal.z * scale_factor };
-
-    let projected_point = Point3d::add(&point, &transform);
-
-    return projected_point;
-}
-
-/// Returns a point { x, y, z = 0 } projected onto a 3D plane in that plane's 2D coordinate space
-/// 
-/// # Arguments
-/// 
-/// * `x` - x coordinate of point to project
-/// * `y` - y coordinate of point to project
-/// * `z` - z coordinate of point to project
-/// 
-/// * `a` - x component of plane normal
-/// * `b` - y component of plane normal
-/// * `c` - z component of plane normal
-/// 
-/// * `d` - x coordinate of the given plane's origin
-/// * `e` - y coordinate of the given plane's origin
-/// * `f` - z coordinate of the given plane's origin
-/// 
-/// * `rotation` - clockwise rotation (in degrees) of default basis about the plane's normal
-/// 
-#[wasm_bindgen]
-pub fn project_and_remap(x: f64, y: f64, z: f64, a: f64, b: f64, c: f64, d: f64, e: f64, f: f64, _rotation: f64) -> Point3d {
-    let point_in_plane = project(x, y, z, a, b, c, d, e, f);
-
-    // Handle cases where plane is flat
-    if Point3d::new(a, b, c).equals(&Point3d::new(0.0, 0.0, 1.0)) {
-        return Point3d::new(x - d, y - e, 0.0);
-    }
-
-    if Point3d::new(a, b, c).equals(&Point3d::new(0.0, 0.0, -1.0)) {
-        return Point3d::new(x + d, y + e, 0.0);
-    }
-
-    let normal = Point3d::new(a, b, c);
-    let unit_z = Point3d::new(0.0, 0.0, 1.0);
-    let y_plane = Point3d::cross(&normal, &unit_z);
-
-    let y_direction_initial = Point3d::cross(&normal, &y_plane);
-
-    let y_direction = if y_direction_initial.z < 0.0 {
-        Point3d::reverse(&y_direction_initial)
-    } else {
-        y_direction_initial
-    };
-
-    // TODO: Rotate y_direction about normal based on rotation argument
-
-    let x_direction = Point3d::cross(&normal, &y_direction);
-
-    let point = Point3d::new(point_in_plane.x - d, point_in_plane.y - e, point_in_plane.z - f);
-
-    let x_component = Point3d::project(&point, &x_direction);
-    let x = if Point3d::dot(&x_component, &x_direction) >= 0.0 {
-        x_component.magnitude()
-    } else {
-        x_component.magnitude() * -1.0
-    };
-
-    let y_component = Point3d::project(&point, &y_direction);
-    let y = if Point3d::dot(&y_component, &y_direction) >= 0.0 {
-        y_component.magnitude()
-    } else {
-        y_component.magnitude() * -1.0
-    };
-
-    return Point3d { x: x, y: y, z: 0.0 };
-}
-
-/// Returns the numerical distance between a given point and its projection perpendicular to a given plane.
-/// Result will be positive if projection is in opposite direction of normal ('above' the plane).
-/// Otherwise, it will be negative.
-/// 
-/// # Arguments
-/// 
-/// * `x` - x coordinate of point to project
-/// * `y` - y coordinate of point to project
-/// * `z` - z coordinate of point to project
-/// 
-/// * `a` - x component of plane normal
-/// * `b` - y component of plane normal
-/// * `c` - z component of plane normal
-/// 
-/// * `d` - x coordinate of the given plane's origin
-/// * `e` - y coordinate of the given plane's origin
-/// * `f` - z coordinate of the given plane's origin
-/// 
-/// # Examples
-/// 
-/// `distance_to_projection(2.0, 3.0, 5.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0)`
-/// returns 2.0
-/// 
-/// `distance_to_projection(2.0, 3.0, 1.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0)`
-/// returns -2.0
-/// 
-/// `distance_to_projection(2.0, 3.0, 1.0, 0.0, 0.0, -1.0, 2.0, 3.0, 3.0)`
-/// returns 2.0
-/// 
-#[wasm_bindgen]
-pub fn distance_to_projection(x: f64, y: f64, z: f64, a: f64, b: f64, c: f64, d: f64, e: f64, f: f64) -> f64 {
-    let point = Point3d::new(x, y, z);
-    let normal = Point3d::new(a, b, c);
-    let projected_point = project(x, y, z, a, b, c, d, e, f);
-
-    print!("{}", projected_point);
-
-    let distance = point.distance_to(&projected_point);
-    let direction = Point3d::add(&Point3d::reverse(&projected_point), &point).normalize();
-    let alignment = Point3d::dot(&normal, &direction);
-
-    return distance * alignment;
-}
-
-#[cfg(test)]
-mod distance_to_projection {
-
-    use distance_to_projection;
-
-    #[test]
-    fn point_directly_above() {
-        let result = distance_to_projection(2.0, 3.0, 5.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0);
-
-        assert_eq!(result, 2.0);
-    }
-
-    #[test]
-    fn point_directly_below() {
-        let result = distance_to_projection(2.0, 3.0, 1.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0);
-
-        assert_eq!(result, -2.0);
-    }
-
-    #[test]
-    fn point_directly_below_flipped() {
-        let result = distance_to_projection(2.0, 3.0, 1.0, 0.0, 0.0, -1.0, 2.0, 3.0, 3.0);
-
-        assert_eq!(result, 2.0);
-    }
-}
-
-#[cfg(test)]
-mod project {
-
-    use project;
-    use Point3d;
-
-    #[test]
-    fn arbitrary_point_to_world_xy() {
-        let pt = project(5.0, 4.0, 3.0, 0.0, 0.0, 1.0, 3.0, 2.0, 1.0);
-        let target = Point3d::new(5.0, 4.0, 1.0);
-
-        assert!(pt.equals(&target));
-    }
-
-    #[test]
-    fn arbitrary_point_in_plane() {
-        let pt = project(5.0, 4.0, 1.0, 0.0, 0.0, 1.0, 3.0, 2.0, 1.0);
-        let target = Point3d::new(5.0, 4.0, 1.0);
-
-        assert!(pt.equals(&target));
-    }
-}
-
-#[cfg(test)]
-mod project_and_remap {
-    
-    use project_and_remap;
-    use Point3d;
-
-    #[test]
-    fn flat_planes() {
-        let pt = project_and_remap(5.0, 4.0, 3.0, 0.0, 0.0, 1.0, 1.0, 2.0, 1.5, 0.0);
-        let target = Point3d::new(4.0, 2.0, 0.0);
-
-        assert!(pt.equals(&target));
-    }
-
-    #[test]
-    fn vertical_plane_looking_towards() {
-        let pt = project_and_remap(2.0, 4.0, 4.0, 0.0, 1.0, 0.0, 1.0, -5.0, 3.0, 0.0);
-        let target = Point3d::new(1.0, 1.0, 0.0);
-
-        assert!(pt.equals(&target));
-    }
-
-    #[test]
-    fn vertical_plane_looking_away() {
-        let pt = project_and_remap(2.0, 4.0, 4.0, 0.0, -1.0, 0.0, 1.0, -5.0, 3.0, 0.0);
-        let target = Point3d::new(-1.0, 1.0, 0.0);
-
-        assert!(pt.equals(&target));
-    }
-
-    #[test]
-    fn values_from_rhino() {
-        let pt = project_and_remap(9.727794, 85.785782, 42.555986, 0.549634, 0.547786, 0.63074, 9.106581, 87.990335, 39.597263, 0.0);
-        let target = Point3d::new(2.0, 3.0, 0.0);
-
-        assert!(pt.equals_with_tolerance(&target, 0.1));
     }
 }
 
@@ -475,5 +232,248 @@ mod point3d {
         let res = a.distance_to(&b);
 
         assert!((res - 2.0f64.sqrt()).abs() < 0.1);
+    }
+}
+
+/// Returns a point { x, y, z } projected onto a given plane.
+///
+/// # Arguments
+///
+/// * `x` - x coordinate of point to project
+/// * `y` - y coordinate of point to project
+/// * `z` - z coordinate of point to project
+/// 
+/// * `a` - x component of plane normal
+/// * `b` - y component of plane normal
+/// * `c` - z component of plane normal
+/// 
+/// * `d` - x coordinate of a point on the plane
+/// * `e` - y coordinate of a point on the plane
+/// * `f` - z coordinate of a point on the plane
+/// 
+/// # Returns
+/// 
+/// * Point3d { x: f64, y: f64, z: f64 }
+/// 
+/// Note: The returned coordinates are in world coordinate space.
+///
+/// # Example
+///
+/// ```
+/// Nothing yet
+/// ```
+#[wasm_bindgen]
+pub fn project(x: f64, y: f64, z: f64, a: f64, b: f64, c: f64, d: f64, e: f64, f: f64) -> Point3d {
+    let point = Point3d { x: x, y: y, z: z };
+    let normal = Point3d { x: a, y: b, z: c };
+
+    let point_to_origin = Point3d { x: d - x, y: e - y, z: f - z };
+    let dot_normal = Point3d::dot(&point_to_origin, &normal);
+    let magnitude_normal = normal.magnitude();
+    let scale_factor = dot_normal / (magnitude_normal * magnitude_normal);
+
+    let transform = Point3d { x: normal.x * scale_factor, y: normal.y * scale_factor, z: normal.z * scale_factor };
+
+    let projected_point = Point3d::add(&point, &transform);
+
+    return projected_point;
+}
+
+#[cfg(test)]
+mod project {
+
+    use project;
+    use Point3d;
+
+    #[test]
+    fn arbitrary_point_to_world_xy() {
+        let pt = project(5.0, 4.0, 3.0, 0.0, 0.0, 1.0, 3.0, 2.0, 1.0);
+        let target = Point3d::new(5.0, 4.0, 1.0);
+
+        assert!(pt.equals(&target));
+    }
+
+    #[test]
+    fn arbitrary_point_in_plane() {
+        let pt = project(5.0, 4.0, 1.0, 0.0, 0.0, 1.0, 3.0, 2.0, 1.0);
+        let target = Point3d::new(5.0, 4.0, 1.0);
+
+        assert!(pt.equals(&target));
+    }
+}
+
+/// Returns a point { x, y, z = 0 } projected onto a 3D plane in that plane's 2D coordinate space
+/// 
+/// # Arguments
+/// 
+/// * `x` - x coordinate of point to project
+/// * `y` - y coordinate of point to project
+/// * `z` - z coordinate of point to project
+/// 
+/// * `a` - x component of plane normal
+/// * `b` - y component of plane normal
+/// * `c` - z component of plane normal
+/// 
+/// * `d` - x coordinate of the given plane's origin
+/// * `e` - y coordinate of the given plane's origin
+/// * `f` - z coordinate of the given plane's origin
+/// 
+/// * `rotation` - clockwise rotation (in degrees) of default basis about the plane's normal
+/// 
+#[wasm_bindgen]
+pub fn project_and_remap(x: f64, y: f64, z: f64, a: f64, b: f64, c: f64, d: f64, e: f64, f: f64, _rotation: f64) -> Point3d {
+    let point_in_plane = project(x, y, z, a, b, c, d, e, f);
+
+    // Handle cases where plane is flat
+    if Point3d::new(a, b, c).equals(&Point3d::new(0.0, 0.0, 1.0)) {
+        return Point3d::new(x - d, y - e, 0.0);
+    }
+
+    if Point3d::new(a, b, c).equals(&Point3d::new(0.0, 0.0, -1.0)) {
+        return Point3d::new(x + d, y + e, 0.0);
+    }
+
+    let normal = Point3d::new(a, b, c);
+    let unit_z = Point3d::new(0.0, 0.0, 1.0);
+    let y_plane = Point3d::cross(&normal, &unit_z);
+
+    let y_direction_initial = Point3d::cross(&normal, &y_plane);
+
+    let y_direction = if y_direction_initial.z < 0.0 {
+        Point3d::reverse(&y_direction_initial)
+    } else {
+        y_direction_initial
+    };
+
+    // TODO: Rotate y_direction about normal based on rotation argument
+
+    let x_direction = Point3d::cross(&normal, &y_direction);
+
+    let point = Point3d::new(point_in_plane.x - d, point_in_plane.y - e, point_in_plane.z - f);
+
+    let x_component = Point3d::project(&point, &x_direction);
+    let x = if Point3d::dot(&x_component, &x_direction) >= 0.0 {
+        x_component.magnitude()
+    } else {
+        x_component.magnitude() * -1.0
+    };
+
+    let y_component = Point3d::project(&point, &y_direction);
+    let y = if Point3d::dot(&y_component, &y_direction) >= 0.0 {
+        y_component.magnitude()
+    } else {
+        y_component.magnitude() * -1.0
+    };
+
+    return Point3d { x: x, y: y, z: 0.0 };
+}
+
+#[cfg(test)]
+mod project_and_remap {
+    
+    use project_and_remap;
+    use Point3d;
+
+    #[test]
+    fn flat_planes() {
+        let pt = project_and_remap(5.0, 4.0, 3.0, 0.0, 0.0, 1.0, 1.0, 2.0, 1.5, 0.0);
+        let target = Point3d::new(4.0, 2.0, 0.0);
+
+        assert!(pt.equals(&target));
+    }
+
+    #[test]
+    fn vertical_plane_looking_towards() {
+        let pt = project_and_remap(2.0, 4.0, 4.0, 0.0, 1.0, 0.0, 1.0, -5.0, 3.0, 0.0);
+        let target = Point3d::new(1.0, 1.0, 0.0);
+
+        assert!(pt.equals(&target));
+    }
+
+    #[test]
+    fn vertical_plane_looking_away() {
+        let pt = project_and_remap(2.0, 4.0, 4.0, 0.0, -1.0, 0.0, 1.0, -5.0, 3.0, 0.0);
+        let target = Point3d::new(-1.0, 1.0, 0.0);
+
+        assert!(pt.equals(&target));
+    }
+
+    #[test]
+    fn values_from_rhino() {
+        let pt = project_and_remap(9.727794, 85.785782, 42.555986, 0.549634, 0.547786, 0.63074, 9.106581, 87.990335, 39.597263, 0.0);
+        let target = Point3d::new(2.0, 3.0, 0.0);
+
+        assert!(pt.equals_with_tolerance(&target, 0.1));
+    }
+}
+
+/// Returns the numerical distance between a given point and its projection perpendicular to a given plane.
+/// Result will be positive if projection is in opposite direction of normal ('above' the plane).
+/// Otherwise, it will be negative.
+/// 
+/// # Arguments
+/// 
+/// * `x` - x coordinate of point to project
+/// * `y` - y coordinate of point to project
+/// * `z` - z coordinate of point to project
+/// 
+/// * `a` - x component of plane normal
+/// * `b` - y component of plane normal
+/// * `c` - z component of plane normal
+/// 
+/// * `d` - x coordinate of the given plane's origin
+/// * `e` - y coordinate of the given plane's origin
+/// * `f` - z coordinate of the given plane's origin
+/// 
+/// # Examples
+/// 
+/// `distance_to_projection(2.0, 3.0, 5.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0)`
+/// returns 2.0
+/// 
+/// `distance_to_projection(2.0, 3.0, 1.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0)`
+/// returns -2.0
+/// 
+/// `distance_to_projection(2.0, 3.0, 1.0, 0.0, 0.0, -1.0, 2.0, 3.0, 3.0)`
+/// returns 2.0
+/// 
+#[wasm_bindgen]
+pub fn distance_to_projection(x: f64, y: f64, z: f64, a: f64, b: f64, c: f64, d: f64, e: f64, f: f64) -> f64 {
+    let point = Point3d::new(x, y, z);
+    let normal = Point3d::new(a, b, c);
+    let projected_point = project(x, y, z, a, b, c, d, e, f);
+
+    print!("{}", projected_point);
+
+    let distance = point.distance_to(&projected_point);
+    let direction = Point3d::add(&Point3d::reverse(&projected_point), &point).normalize();
+    let alignment = Point3d::dot(&normal, &direction);
+
+    return distance * alignment;
+}
+
+#[cfg(test)]
+mod distance_to_projection {
+
+    use distance_to_projection;
+
+    #[test]
+    fn point_directly_above() {
+        let result = distance_to_projection(2.0, 3.0, 5.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0);
+
+        assert_eq!(result, 2.0);
+    }
+
+    #[test]
+    fn point_directly_below() {
+        let result = distance_to_projection(2.0, 3.0, 1.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0);
+
+        assert_eq!(result, -2.0);
+    }
+
+    #[test]
+    fn point_directly_below_flipped() {
+        let result = distance_to_projection(2.0, 3.0, 1.0, 0.0, 0.0, -1.0, 2.0, 3.0, 3.0);
+
+        assert_eq!(result, 2.0);
     }
 }
