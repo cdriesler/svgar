@@ -1,6 +1,12 @@
 import { Interval } from '../primitives/Interval';
 import { Point3f } from '../primitives/Point3f';
 
+interface Point3d {
+    x: number,
+    y: number,
+    z: number
+}
+
 export default class SvgarCamera {
 
     private _position: Point3f;
@@ -26,6 +32,14 @@ export default class SvgarCamera {
         this.position = { x: 0, y: 0, z: 0 };
         this.target = { x: 0, y: 0, z: -1 };
         this.extents = { w: 10, h: 10 };        
+    }
+
+    public getNormal(): Point3d {
+        return {
+            x: this.target.x - this.position.x,
+            y: this.target.y - this.position.y,
+            z: this.target.z - this.position.z
+        }
     }
 
     private updateNormal(): void {
