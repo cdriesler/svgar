@@ -134,11 +134,10 @@ export default class SvgarCameraContext {
 
     /**
      * Translate camera position and target in current orientation's plane.
-     * @param {number} x - Magnitude of x coordinate translation. 
-     * @param {number} y - Magnitude of y coordinate translation. 
-     * @param {number} z - Magnitude of z coordinate translation. 
+     * @param {number} x Magnitude of x coordinate translation. 
+     * @param {number} y Magnitude of y coordinate translation. 
      */
-    public track(x: number, y: number, z: number): void {
+    public track(x: number, y: number): void {
 
     }
 

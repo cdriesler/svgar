@@ -1,4 +1,3 @@
-import SvgarMaterial from './SvgarMaterial'
 import SvgarGeometry from './../geometry/SvgarGeometry'
 
 interface Point3d {
@@ -10,7 +9,6 @@ interface Point3d {
 export default class SvgarElement {
 
     private geometry: SvgarGeometry;
-    private material: SvgarMaterial;
 
     public creamModule: any;
 
@@ -18,9 +16,8 @@ export default class SvgarElement {
     private cameraCoordinates: number[];
     private pageCoordinates: number[];
 
-    constructor(geometry: SvgarGeometry, material?: SvgarMaterial) {
+    constructor(geometry: SvgarGeometry) {
         this.geometry = geometry;
-        this.material = material;
 
         this.worldCoordinates = SvgarGeometry.compile(geometry);
         this.cameraCoordinates = [];
