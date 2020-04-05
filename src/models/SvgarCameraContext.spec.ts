@@ -94,12 +94,12 @@ describe('given a default camera context', () => {
             expect(svgar.camera.rotation).to.equal(25);
         });
 
-        it('should allow it to be changed with degrees through context rotate() function', () => {
+        it('should allow it to be changed with degrees', () => {
             svgar.camera.rotate(90, true);
             expect(svgar.camera.rotation * (180/Math.PI)).to.equal(90);
         });
 
-        it('should allow it to be changed with radians through context rotate() function', () => {
+        it('should allow it to be changed with radians', () => {
             svgar.camera.rotate(0.544);
             expect(svgar.camera.rotation).to.equal(0.544);
         });

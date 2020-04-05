@@ -1,13 +1,10 @@
 import rhino3dm from 'rhino3dm';
-import Camera, { Point3d } from './SvgarCamera';
 import CameraContext from './SvgarCameraContext';
 import Element from './SvgarElement';
 
 export default class SvgarCube {
     
-    private _camera: Camera;
     public camera: CameraContext | undefined;
-
     public elements: Element[];
 
     public svg: string = '';
@@ -17,7 +14,6 @@ export default class SvgarCube {
     
     constructor() {
         this.elements = [];
-        this._camera = new Camera();
     }
 
     /**
@@ -28,7 +24,7 @@ export default class SvgarCube {
     public async initialize(): Promise<boolean> {
 
         this.creamModule = await import('./../wasm/cream');
-        this.camera = new CameraContext(this._camera, this.creamModule);
+        this.camera = new CameraContext(this.creamModule);
 
         rhino3dm().then(rhino => {
             this.rhinoModule = rhino;
@@ -49,6 +45,7 @@ export default class SvgarCube {
     public render(w: number, h: number): string {
 
         const camera = this.camera;
+        const [position, normal] = this.camera.compile();
 
         function toSvg(coordinates: number[]): string {
             if (coordinates.length < 12) return '';

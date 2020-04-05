@@ -1,8 +1,19 @@
-import Camera, { Point3d } from './SvgarCamera';
+interface Point3d {
+    x: number,
+    y: number,
+    z: number
+}
+
+interface SvgarCamera {
+    position: Point3d;
+    target: Point3d;
+    extents: { w: number, h: number }; 
+    rotation: number;
+}
 
 export default class SvgarCameraContext {
 
-    private camera: Camera;
+    private camera: SvgarCamera;
     private cream: any;
 
     get position(): Point3d {
@@ -33,16 +44,50 @@ export default class SvgarCameraContext {
         this.camera.rotation = value;
     }
 
-    constructor(camera: Camera, cream: any) {
-        this.camera = camera;
+    /**
+     * @hideconstructor
+     */
+    constructor(cream: any) {
+        this.reset();
         this.cream = cream;
+    }
+
+    /**
+     * Generate camera information necessary for render.
+     */
+    public compile(): Point3d[] {
+        return [this.position, this.getNormal()];
+    }
+
+    private getNormal(): Point3d {
+        return {
+            x: this.target.x - this.position.x,
+            y: this.target.y - this.position.y,
+            z: this.target.z - this.position.z
+        }
     }
 
     /**
      * Reset camera to default 2D configuration.
      */
     public reset(): void {
-        this.camera = new Camera();
+        this.camera = {
+            position: { 
+                x: 0,
+                y: 0,
+                z: 0 
+            },
+            target: {
+                x: 0,
+                y: 0,
+                z: -1
+            },
+            extents: {
+                w: 10,
+                h: 10
+            },
+            rotation: 0
+        }
     }
 
     /**

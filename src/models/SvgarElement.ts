@@ -1,7 +1,11 @@
 import SvgarMaterial from './SvgarMaterial'
 import SvgarGeometry from './../geometry/SvgarGeometry'
-import SvgarCamera from './SvgarCamera';
-import { Point3f } from 'src/primitives/Point3f';
+
+interface Point3d {
+    x: number,
+    y: number,
+    z: number
+}
 
 export default class SvgarElement {
 
@@ -23,25 +27,25 @@ export default class SvgarElement {
     }
 
     // Update numbers in camera space
-    private project(camera: SvgarCamera): void {
+    private project(position: Point3d, normal: Point3d): void {
         this.cameraCoordinates = [];
         for (let i = 0; i < this.worldCoordinates.length; i += 3) {
             const x = this.worldCoordinates[i];
             const y = this.worldCoordinates[i + 1];
             const z = this.worldCoordinates[i + 2];
-            const c = camera;
-            const n = camera.getNormal();
+            const n = normal;
+            const c = position;
 
-            const pt: Point3f = this.creamModule.project_and_remap(
+            const pt: Point3d = this.creamModule.project_and_remap(
                 x,
                 y,
                 z,
                 n.x,
                 n.y,
                 n.z,
-                c.position.x,
-                c.position.y,
-                c.position.z,
+                c.x,
+                c.y,
+                c.z,
                 0
             )
 
@@ -50,8 +54,8 @@ export default class SvgarElement {
     }
 
     // Return svgar-style coordinates in 2D camera space
-    public compile(camera: SvgarCamera): number[] {
-        this.project(camera);
+    public compile(): number[] {
+        this.project({x: 0, y: 0, z: 0}, {x: 0, y: 0, z: -1});
         return this.cameraCoordinates;
     }
     
