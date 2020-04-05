@@ -442,8 +442,6 @@ pub fn distance_to_projection(x: f64, y: f64, z: f64, a: f64, b: f64, c: f64, d:
     let normal = Point3d::new(a, b, c);
     let projected_point = project(x, y, z, a, b, c, d, e, f);
 
-    print!("{}", projected_point);
-
     let distance = point.distance_to(&projected_point);
     let direction = Point3d::add(&Point3d::reverse(&projected_point), &point).normalize();
     let alignment = Point3d::dot(&normal, &direction);
@@ -476,4 +474,57 @@ mod distance_to_projection {
 
         assert_eq!(result, 2.0);
     }
+}
+
+/// Rotates a given point { x, y, z } about a given axis defined by two points.
+/// 
+/// # Arguments
+/// 
+/// * `x` - x coordinate of point to rotate
+/// * `y` - y coordinate of point to rotate
+/// * `z` - z coordinate of point to rotate
+/// 
+/// * `a` - x coordinate of axis line start point
+/// * `b` - y coordinate of axis line start point
+/// * `c` - z coordinate of axis line start point
+/// 
+/// * `d` - x coordinate of axis line end point
+/// * `e` - y coordinate of axis line end point
+/// * `f` - z coordinate of axis line end point
+/// 
+/// * `angle` - rotation angle in radians (right-hand coordinate space)
+/// * `is_degrees` - set to true if angle input is in degrees
+#[wasm_bindgen]
+pub fn rotate(x: f64, y: f64, z: f64, a: f64, b: f64, c: f64, d: f64, e: f64, f: f64, angle: f64, is_degrees: bool) -> Point3d {
+    let rot = if is_degrees {
+        (3.14159/180.0) * angle
+    } else {
+        angle
+    };
+
+    let point = Point3d::new(x, y, z);
+    let axis_start = Point3d::new(a, b, c);
+    let axis_end = Point3d::new(d, e, f);
+    let axis = Point3d::add(&axis_end, &Point3d::reverse(&axis_start)).normalize();
+
+    let i_x = rot.cos() + (axis.x.powf(2.0) * (1.0 - rot.cos()));
+
+    return Point3d::new(0.0, 0.0, 0.0);
+} 
+
+#[cfg(test)]
+mod rot {
+
+    use rotate;
+    use Point3d;
+
+    #[test]
+    fn plane_xy_right_angle() {
+        let result = rotate(1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 90.0, true);
+
+        print!("{}", result);
+
+        assert!(result.equals(&Point3d::new(0.0, 1.0, 0.0)));
+    }
+
 }
