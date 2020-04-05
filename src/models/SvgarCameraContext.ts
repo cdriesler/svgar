@@ -3,7 +3,7 @@ import Camera, { Point3d } from './SvgarCamera';
 export default class SvgarCameraContext {
 
     private camera: Camera;
-    private cream: any | undefined;
+    private cream: any;
 
     get position(): Point3d {
         return this.camera.position;
@@ -36,6 +36,13 @@ export default class SvgarCameraContext {
     constructor(camera: Camera, cream: any) {
         this.camera = camera;
         this.cream = cream;
+    }
+
+    /**
+     * Reset camera to default 2D configuration.
+     */
+    public reset(): void {
+        this.camera = new Camera();
     }
 
     /**
@@ -110,6 +117,13 @@ export default class SvgarCameraContext {
 
     }
 
+    /**
+     * Rotate camera position about y axis of orientation plane at target location.
+     * Optionally rotate axis about plane normal. Current camera rotation is ignored.
+     * @param {number} angle - Angle (in radians) to rotate position. 
+     * @param {number} tilt - Angle (in radians) to rotate initial axis. 
+     * @param {boolean} isDegrees - Optional flag to decalre input angles are in degrees. 
+     */
     public orbit(angle: number, tilt: number, isDegrees: boolean): void {
 
     }
