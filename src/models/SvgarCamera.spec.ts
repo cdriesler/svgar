@@ -1,25 +1,20 @@
-import Camera from './SvgarCamera';
+import Cube from './SvgarCube';
 import { expect } from 'chai';
 import 'mocha';
 
 describe('given a camera initialized with default values', () => {
 
-    let camera: Camera;
+    let svgar: Cube;
 
-    before(() => {
-        camera = new Camera();
+    before(async () => {
+        svgar = new Cube();
+        await svgar.initialize();
     });
 
     describe('when calculating the camera orientation', () => {
 
-        let normal: { x: number, y: number, z: number };
-
-        before(() => {
-            normal = camera.getNormal();
-        })
-
         it('should return a normal in the default 2D orientation', () => {
-            expect(normal.z).to.equal(-1);
+            expect(svgar.pingWasm()).to.equal('Hello, wasm!');
         })
     })
 })

@@ -1,7 +1,7 @@
 import { Interval } from '../primitives/Interval';
 import { Point3f } from '../primitives/Point3f';
 
-interface Point3d {
+export interface Point3d {
     x: number,
     y: number,
     z: number
@@ -9,23 +9,8 @@ interface Point3d {
 
 export default class SvgarCamera {
 
-    private _position: Point3f;
-    set position(value: Point3f) {
-        this._position = value;
-        this.updateNormal();
-    }
-    get position(): Point3f {
-        return this._position;
-    }
-    private _target: Point3f;
-    set target(value: Point3f) {
-        this._target = value;
-        this.updateNormal()
-    }
-    get target(): Point3f {
-        return this._target;
-    }
-    public direction: Point3f;
+    public position: Point3d;
+    public target: Point3d;
     public extents: { w: number, h: number }; 
 
     constructor() {
@@ -36,22 +21,6 @@ export default class SvgarCamera {
 
     public getNormal(): Point3d {
         return {
-            x: this.target.x - this.position.x,
-            y: this.target.y - this.position.y,
-            z: this.target.z - this.position.z
-        }
-    }
-
-    private updateNormal(): void {
-        if(this.position === undefined || this.target === undefined) {
-            this.direction = {
-                x: 0,
-                y: 0,
-                z: -1
-            }
-            return;
-        }
-        this.direction = {
             x: this.target.x - this.position.x,
             y: this.target.y - this.position.y,
             z: this.target.z - this.position.z

@@ -592,7 +592,6 @@ mod rot {
     #[test]
     fn arbitrary_rotation_from_rhino() {
         let result = rotate(-6.76816, -9.35907, 7.02872, -1.94735, -22.2699, -5.30516, 12.0779, -4.96271, 11.102, 33.5, true);
-        print!("{}", result);
         assert!(result.equals_with_tolerance(&Point3d::new(-4.84447, -15.1873, 11.5322), 0.01));
     }
 

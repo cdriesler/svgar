@@ -30,14 +30,15 @@ export default class SvgarElement {
             const y = this.worldCoordinates[i + 1];
             const z = this.worldCoordinates[i + 2];
             const c = camera;
+            const n = camera.getNormal();
 
             const pt: Point3f = this.creamModule.project_and_remap(
                 x,
                 y,
                 z,
-                c.direction.x,
-                c.direction.y,
-                c.direction.z,
+                n.x,
+                n.y,
+                n.z,
                 c.position.x,
                 c.position.y,
                 c.position.z,

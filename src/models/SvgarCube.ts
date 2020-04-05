@@ -1,20 +1,70 @@
 import rhino3dm from 'rhino3dm';
-import Camera from './SvgarCamera';
+import Camera, { Point3d } from './SvgarCamera';
 import Element from './SvgarElement';
+
+class CameraContext {
+
+    private camera: Camera;
+    private cream: any | undefined;
+
+    get position(): Point3d {
+        return this.camera.position;
+    }
+    set position(value: Point3d) {
+        this.camera.position = value;
+    }
+
+    get target(): Point3d {
+        return this.camera.target;
+    }
+    set target(value: Point3d) {
+        this.camera.target = value;
+    }
+
+    get extents(): {w: number, h: number} {
+        return this.camera.extents;
+    }
+    set extents(value: {w: number, h: number}) {
+        this.camera.extents = value;
+    }
+
+    constructor(camera: Camera, cream: any) {
+        this.camera = camera;
+        this.cream = cream;
+    }
+
+    public move(x: number, y: number, z: number): void {
+
+    }
+
+    public track(x: number, y: number, z: number): void {
+
+    }
+
+    public rotate(angle: number, isDegrees: boolean): void {
+
+    }
+
+    public tilt(angle: number, isDegrees: boolean): void {
+
+    }
+
+    public pan(angle: number, isDegrees: boolean): void {
+
+    }
+
+    public orbit(angle: number, tilt: number, isDegrees: boolean): void {
+
+    }
+
+}
 
 export default class SvgarCube {
     
-    public camera: Camera;
-    private _elements: Element[];
-    get elements(): Element[] {
-        return this._elements;
-    }
-    set elements(value: Element[]) {
-        value.forEach(el => {
-            el.creamModule = this.creamModule;
-        })
-        this._elements = value;
-    }
+    private _camera: Camera;
+    public camera: CameraContext | undefined;
+
+    public elements: Element[];
 
     public svg: string = '';
 
@@ -23,17 +73,7 @@ export default class SvgarCube {
     
     constructor() {
         this.elements = [];
-        this.camera = new Camera();
-
-        Object.defineProperty(this._elements, "push", {
-            enumerable: false,
-            configurable: false,
-            writable: false,
-            value: (el: Element) => {
-                el.creamModule = this.creamModule;
-                this._elements[this._elements.length] = el;
-            }
-        });
+        this._camera = new Camera();
     }
 
     /**
@@ -47,6 +87,7 @@ export default class SvgarCube {
     public async initialize(): Promise<boolean> {
 
         this.creamModule = await import('./../wasm/cream');
+        this.camera = new CameraContext(this._camera, this.creamModule);
 
         rhino3dm().then(rhino => {
             this.rhinoModule = rhino;
@@ -103,7 +144,7 @@ export default class SvgarCube {
 
         const svg = [
             `<svg version="1.1" width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">`,
-            this.elements.map(el => toSvg(el.compile(camera))).join('\n'),
+            // this.elements.map(el => toSvg(el.compile(camera))).join('\n'),
             `</svg>`
         ].join('\n');
 
