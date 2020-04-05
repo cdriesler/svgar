@@ -22,7 +22,7 @@ export default class SvgarElement {
         this.geometry = geometry;
         this.material = material;
 
-        this.worldCoordinates = geometry.compile();
+        this.worldCoordinates = SvgarGeometry.compile(geometry);
         this.cameraCoordinates = [];
     }
 

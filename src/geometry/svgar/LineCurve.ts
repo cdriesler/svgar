@@ -1,12 +1,13 @@
 import SvgarGeometry from '../SvgarGeometry'
 import { Point3f } from './../../primitives/Point3f';
 
-export default class LineCurve implements SvgarGeometry {
+export default class LineCurve extends SvgarGeometry {
 
-    private from: Point3f;
-    private to: Point3f;
+    public from: Point3f;
+    public to: Point3f;
 
     constructor(from: Point3f, to: Point3f) {
+        super('LineCurve');
         this.from = from;
         this.to = to;
     }

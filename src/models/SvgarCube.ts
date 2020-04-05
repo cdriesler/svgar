@@ -45,13 +45,13 @@ export default class SvgarCube {
     public render(w: number, h: number): string {
 
         const camera = this.camera;
-        const [position, normal] = this.camera.compile();
+        const [position, normal, extents] = this.camera.compile();
 
         function toSvg(coordinates: number[]): string {
             if (coordinates.length < 12) return '';
 
-            const x = camera.extents.w;
-            const y = camera.extents.h;
+            const x = extents.x;
+            const y = extents.y;
 
             const xMax = x / 2;
             const xMin = x / -2;

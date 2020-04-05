@@ -56,7 +56,11 @@ export default class SvgarCameraContext {
      * Generate camera information necessary for render.
      */
     public compile(): Point3d[] {
-        return [this.position, this.getNormal()];
+        return [
+            this.position,
+            this.getNormal(),
+            this.getExtents()
+        ];
     }
 
     private getNormal(): Point3d {
@@ -64,6 +68,14 @@ export default class SvgarCameraContext {
             x: this.target.x - this.position.x,
             y: this.target.y - this.position.y,
             z: this.target.z - this.position.z
+        }
+    }
+
+    private getExtents(): Point3d {
+        return {
+            x: this.extents.w,
+            y: this.extents.h,
+            z: 0
         }
     }
 
