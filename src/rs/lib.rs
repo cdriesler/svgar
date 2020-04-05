@@ -507,9 +507,50 @@ pub fn rotate(x: f64, y: f64, z: f64, a: f64, b: f64, c: f64, d: f64, e: f64, f:
     let axis_end = Point3d::new(d, e, f);
     let axis = Point3d::add(&axis_end, &Point3d::reverse(&axis_start)).normalize();
 
+    // Construct rotation matrix
     let i_x = rot.cos() + (axis.x.powf(2.0) * (1.0 - rot.cos()));
+    let i_y = (axis.y * axis.x * (1.0 - rot.cos())) + (axis.z * rot.sin());
+    let i_z = (axis.z * axis.x * (1.0 - rot.cos())) - (axis.y * rot.sin());
+    let j_x = (axis.x * axis.y * (1.0 - rot.cos())) - (axis.z * rot.sin());
+    let j_y = rot.cos() + (axis.y.powf(2.0) * (1.0 - rot.cos()));
+    let j_z = (axis.z * axis.y * (1.0 - rot.cos())) + (axis.x * rot.sin());
+    let k_x = (axis.x * axis.z * (1.0 - rot.cos())) + (axis.y * rot.sin());
+    let k_y = (axis.y * axis.z * (1.0 - rot.cos())) - (axis.x * rot.sin());
+    let k_z = rot.cos() + (axis.z.powf(2.0) * (1.0 - rot.cos()));
 
-    return Point3d::new(0.0, 0.0, 0.0);
+    // Translate initial point based on axis start point
+    let point_to_rotate = Point3d::add(&point, &Point3d::reverse(&axis_start));
+    let p_x = point_to_rotate.x;
+    let p_y = point_to_rotate.y;
+    let p_z = point_to_rotate.z;
+
+    // Apply rotation matrix
+    let i: [f64; 3] = [
+        p_x * i_x,
+        p_x * i_y,
+        p_x * i_z
+    ];
+    let j: [f64; 3] = [
+        p_y * j_x,
+        p_y * j_y,
+        p_y * j_z
+    ];
+    let k: [f64; 3] = [
+        p_z * k_x,
+        p_z * k_y,
+        p_z * k_z
+    ];
+
+    let rotated_point = Point3d::new(
+        i[0] + j[0] + k[0],
+        i[1] + j[1] + k[1],
+        i[2] + j[2] + k[2]
+    );
+
+    // Undo initial translation
+    let final_point = Point3d::add(&rotated_point, &axis_start);
+
+    return final_point;
 } 
 
 #[cfg(test)]
@@ -524,7 +565,7 @@ mod rot {
 
         print!("{}", result);
 
-        assert!(result.equals(&Point3d::new(0.0, 1.0, 0.0)));
+        assert!(result.equals_with_tolerance(&Point3d::new(0.0, 1.0, 0.0), 0.01));
     }
 
 }
