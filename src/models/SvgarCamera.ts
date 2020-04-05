@@ -12,11 +12,13 @@ export default class SvgarCamera {
     public position: Point3d;
     public target: Point3d;
     public extents: { w: number, h: number }; 
+    public rotation: number;
 
     constructor() {
         this.position = { x: 0, y: 0, z: 0 };
         this.target = { x: 0, y: 0, z: -1 };
-        this.extents = { w: 10, h: 10 };        
+        this.extents = { w: 10, h: 10 };     
+        this.rotation = 0;   
     }
 
     public getNormal(): Point3d {

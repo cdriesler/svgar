@@ -1,63 +1,7 @@
 import rhino3dm from 'rhino3dm';
 import Camera, { Point3d } from './SvgarCamera';
+import CameraContext from './SvgarCameraContext';
 import Element from './SvgarElement';
-
-class CameraContext {
-
-    private camera: Camera;
-    private cream: any | undefined;
-
-    get position(): Point3d {
-        return this.camera.position;
-    }
-    set position(value: Point3d) {
-        this.camera.position = value;
-    }
-
-    get target(): Point3d {
-        return this.camera.target;
-    }
-    set target(value: Point3d) {
-        this.camera.target = value;
-    }
-
-    get extents(): {w: number, h: number} {
-        return this.camera.extents;
-    }
-    set extents(value: {w: number, h: number}) {
-        this.camera.extents = value;
-    }
-
-    constructor(camera: Camera, cream: any) {
-        this.camera = camera;
-        this.cream = cream;
-    }
-
-    public move(x: number, y: number, z: number): void {
-
-    }
-
-    public track(x: number, y: number, z: number): void {
-
-    }
-
-    public rotate(angle: number, isDegrees: boolean): void {
-
-    }
-
-    public tilt(angle: number, isDegrees: boolean): void {
-
-    }
-
-    public pan(angle: number, isDegrees: boolean): void {
-
-    }
-
-    public orbit(angle: number, tilt: number, isDegrees: boolean): void {
-
-    }
-
-}
 
 export default class SvgarCube {
     
@@ -78,11 +22,8 @@ export default class SvgarCube {
 
     /**
      * Loads wasm dependencies and stores references in class instance.
-     * 
-     * @remarks
      * This method must be called and successfully resolved before any other functionality.
-     * 
-     * @returns `true` on successful load
+     * @returns {boolean} - `true` on successful load
      */
     public async initialize(): Promise<boolean> {
 
