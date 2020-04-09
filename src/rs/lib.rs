@@ -98,6 +98,15 @@ impl Point3d {
     }
 }
 
+/// Helper function for wasm_bindgen. Cross product of two vectors.
+#[wasm_bindgen]
+pub fn cross(x: f64, y: f64, z: f64, a: f64, b: f64, c: f64) -> Point3d {
+    let vector_a = Point3d::new(x, y, z);
+    let vector_b = Point3d::new(a, b, c);
+
+    return Point3d::cross(&vector_a, &vector_b);
+}
+
 #[cfg(test)]
 mod point3d {
 

@@ -54,6 +54,7 @@ export default class SvgarCameraContext {
 
     /**
      * Generate camera information necessary for render.
+     * @returns {Array<Point3d>} [position, normal, extents: { x: w, y: h, z: 0 }]
      */
     public compile(): Point3d[] {
         return [
@@ -77,6 +78,28 @@ export default class SvgarCameraContext {
             y: this.extents.h,
             z: 0
         }
+    }
+
+    /**
+     * @returns {Point3d} Vector representation of positive y axis
+     */
+    private getBasisY(): Point3d {
+        const n = this.getNormal();
+        const y: Point3d = this.cream.cross(n.x, n.y, n.z, 0, 0, 1);
+
+        return this.rotation == 0
+            ? y
+            : this.cream.rotate(y.x, y.y, y.z, 0, 0, 0, n.x, n.y, n.z, this.rotation, false);
+    }
+
+    /**
+     * @returns {Point3d} Vector representation of positive x axis
+     */
+    private getBasisX(): Point3d {
+        const n = this.getNormal();
+        const y = this.getBasisY();
+
+        return this.cream.rotate(y.x, y.y, y.z, 0, 0, 0, n.x, n.y, n.z, -90, true);
     }
 
     /**
@@ -104,9 +127,9 @@ export default class SvgarCameraContext {
 
     /**
      * Translate camera position in world coordinate space.
-     * @argument {number} x - Magnitude of x coordinate translation.
-     * @argument {number} y - Magnitude of y coordinate translation.
-     * @argument {number} z - Magnitude of z coordinate translation.
+     * @argument {number} x Magnitude of x coordinate translation.
+     * @argument {number} y Magnitude of y coordinate translation.
+     * @argument {number} z Magnitude of z coordinate translation.
      */
     public movePosition(x: number, y: number, z: number): void {
         const currentPosition = this.position;
@@ -119,9 +142,9 @@ export default class SvgarCameraContext {
 
     /**
      * Translate camera target in world coordinate space.
-     * @argument {number} x - Magnitude of x coordinate translation.
-     * @argument {number} y - Magnitude of y coordinate translation.
-     * @argument {number} z - Magnitude of z coordinate translation.
+     * @argument {number} x Magnitude of x coordinate translation.
+     * @argument {number} y Magnitude of y coordinate translation.
+     * @argument {number} z Magnitude of z coordinate translation.
      */
     public moveTarget(x: number, y: number, z: number): void {
         const currentTarget = this.target;
@@ -143,8 +166,8 @@ export default class SvgarCameraContext {
 
     /**
      * Modify rotation of camera orientation plane.
-     * @param {number} angle - Angle (in radians) to rotate plane ccw.
-     * @param {boolean} isDegrees - Optional flag to declare input angle is in degrees.
+     * @param {number} angle Angle (in radians) to rotate plane ccw.
+     * @param {boolean} isDegrees Optional flag to declare input angle is in degrees.
      */
     public rotate(angle: number, isDegrees: boolean = false): void {
         const rotation = isDegrees
@@ -156,31 +179,31 @@ export default class SvgarCameraContext {
     /**
      * Have camera 'look' up or down. Rotates camera target about x axis of camera
      * position's orientation plane. Current camera rotation is considered.
-     * @param {number} angle - Angle (in radians) to rotate target. Positive is upwards.
-     * @param {boolean} isDegrees - Optional flag to declare input angle is in degrees. 
+     * @param {number} angle Angle (in radians) to rotate target. Positive is upwards.
+     * @param {boolean} isDegrees Optional flag to declare input angle is in degrees. 
      */
-    public tilt(angle: number, isDegrees: boolean): void {
+    public tilt(angle: number, isDegrees: boolean = false): void {
 
     }
 
     /**
      * Have camera 'look' left or right. Rotates camera target about y axis of camera
      * position's orientation plane. Current camera rotation is considered.
-     * @param {number} angle - Angle (in radians) to rotate target. Positive is right.
-     * @param {boolean} isDegrees - Optional flag to declare input angle is in degrees.
+     * @param {number} angle Angle (in radians) to rotate target. Positive is right.
+     * @param {boolean} isDegrees Optional flag to declare input angle is in degrees.
      */
-    public pan(angle: number, isDegrees: boolean): void {
+    public pan(angle: number, isDegrees: boolean = false): void {
 
     }
 
     /**
      * Rotate camera position about y axis of orientation plane at target location.
      * Optionally rotate axis about plane normal. Current camera rotation is ignored.
-     * @param {number} angle - Angle (in radians) to rotate position. 
-     * @param {number} tilt - Angle (in radians) to rotate initial axis. 
-     * @param {boolean} isDegrees - Optional flag to decalre input angles are in degrees. 
+     * @param {number} angle Angle (in radians) to rotate position. 
+     * @param {number} tilt Angle (in radians) to rotate initial axis. 
+     * @param {boolean} isDegrees Optional flag to decalre input angles are in degrees. 
      */
-    public orbit(angle: number, tilt: number, isDegrees: boolean): void {
+    public orbit(angle: number, tilt: number, isDegrees: boolean = false): void {
 
     }
 
