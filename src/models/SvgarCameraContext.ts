@@ -85,11 +85,14 @@ export default class SvgarCameraContext {
      */
     private getBasisY(): Point3d {
         const n = this.getNormal();
-        const y: Point3d = this.cream.cross(n.x, n.y, n.z, 0, 0, 1);
+        const y: Point3d = this.normalIsVertical()[0] 
+            ? { x: 1, y: 0, z: 0 }
+            : this.cream.cross(n.x, n.y, n.z, 0, 0, 1);
+        const rot: Point3d = this.cream.rotate(y.x, y.y, y.z, 0, 0, 0, n.x, n.y, n.z, this.rotation, false);
+        
+        const pt: Point3d = { x: rot.x, y: rot.y, z: rot.z };
 
-        return this.rotation == 0
-            ? y
-            : this.cream.rotate(y.x, y.y, y.z, 0, 0, 0, n.x, n.y, n.z, this.rotation, false);
+        return pt;
     }
 
     /**
@@ -100,6 +103,18 @@ export default class SvgarCameraContext {
         const y = this.getBasisY();
 
         return this.cream.rotate(y.x, y.y, y.z, 0, 0, 0, n.x, n.y, n.z, -90, true);
+    }
+
+    /**
+     * @returns {Array<boolean>} [ true if vertical, true if +z ]
+     */
+    private normalIsVertical(): boolean[] {
+        const n = this.getNormal();
+        const vertical = n.x == 0 && n.y == 0 && n.z != 0;
+
+        return vertical 
+            ? [true, n.z > 0]
+            : [false, false]
     }
 
     /**
@@ -183,7 +198,16 @@ export default class SvgarCameraContext {
      * @param {boolean} isDegrees Optional flag to declare input angle is in degrees. 
      */
     public tilt(angle: number, isDegrees: boolean = false): void {
+        const axis = this.getBasisY();
+        const p = this.position;
+        const t = this.target;
+        const rotated: Point3d = this.cream.rotate(t.x, t.y, t.z, p.x, p.y, p.z, axis.x, axis.y, axis.z, 20, true);
 
+        this.camera.target = {
+            x: rotated.x,
+            y: rotated.y,
+            z: rotated.z
+        };
     }
 
     /**

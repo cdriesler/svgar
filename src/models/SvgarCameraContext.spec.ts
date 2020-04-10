@@ -116,7 +116,7 @@ describe('given a default camera context', () => {
 
     describe('when asking the default camera to track', () => {
 
-        before(() => {
+        beforeEach(() => {
             svgar.camera.track(2, 3.5);
         });
 
@@ -136,7 +136,7 @@ describe('given a default camera context', () => {
 
     describe('when asking a rotated default camera to track', () => {
 
-        before(() => {
+        beforeEach(() => {
             svgar.camera.rotate(45, true);
             svgar.camera.track(1.5, 2);
         });
@@ -159,7 +159,7 @@ describe('given a default camera context', () => {
 
     describe('when asking a tilted camera to track', () => {
 
-        before(() => {
+        beforeEach(() => {
             svgar.camera.tilt(30, true);
             svgar.camera.track(-2, 3.2);
         });
@@ -183,7 +183,7 @@ describe('given a default camera context', () => {
 
     describe('when asking a panned camera to track', () => {
         
-        before(() => {
+        beforeEach(() => {
             svgar.camera.pan(-15, true);
             svgar.camera.track(2.2, -5);
         });
@@ -207,7 +207,7 @@ describe('given a default camera context', () => {
 
     describe('when asking an arbitrarily angled and rotated camera to track', () => {
 
-        before(() => {
+        beforeEach(() => {
             svgar.camera.tilt(20, true);
             svgar.camera.pan(-35, true);
             svgar.camera.rotate(27, true);
@@ -233,7 +233,7 @@ describe('given a default camera context', () => {
 
     describe('when asking an arbitrarily angled, rotated, and translated camera to track', () => {
 
-        before(() => {
+        beforeEach(() => {
             svgar.camera.tilt(20, true);
             svgar.camera.pan(-35, true);
             svgar.camera.rotate(27, true);
@@ -258,5 +258,27 @@ describe('given a default camera context', () => {
         });
 
     });
+
+    describe('when tilting the default camera', () => {
+
+        beforeEach(() => {
+            svgar.camera.tilt(20, true);
+        });
+
+        it('should set the target to the correct x value', () => {
+            expect(svgar.camera.target.x).to.equal(0);
+        });
+
+        it('should set the camera target to the correct y value', () => {
+            const result = Math.abs(svgar.camera.target.y - 0.34202) < tolerance;
+            expect(result).to.be.true;
+        });
+
+        it('should set the camera target to the correct z value', () => {
+            const result = Math.abs(svgar.camera.target.z - (-0.939693)) < tolerance;
+            expect(result).to.be.true;
+        });
+
+    })
 
 });
