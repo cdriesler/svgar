@@ -37,6 +37,10 @@ export default class SvgarCameraContext {
         this.camera.extents = value;
     }
 
+    /**
+     * Current camera rotation in radians.
+     * @remarks Rotation is CCW in picture plane.
+     */
     get rotation(): number {
         return this.camera.rotation;
     }
@@ -103,6 +107,14 @@ export default class SvgarCameraContext {
         const y = this.getBasisY();
 
         return this.cream.rotate(y.x, y.y, y.z, 0, 0, 0, n.x, n.y, n.z, -90, true);
+    }
+
+    /**
+     * Helper function that returns `this.rotation * -1`
+     * @remarks Meant to increase code legibility.
+     */
+    private getInverseRotation(): number {
+        return this.rotation * -1;
     }
 
     /**
@@ -198,15 +210,26 @@ export default class SvgarCameraContext {
      * @param {boolean} isDegrees Optional flag to declare input angle is in degrees. 
      */
     public tilt(angle: number, isDegrees: boolean = false): void {
-        const axis = this.getBasisY();
+        // Cache necessary initial values
+        const a = this.getBasisY();
+        const n = this.getNormal();
         const p = this.position;
         const t = this.target;
-        const rotated: Point3d = this.cream.rotate(t.x, t.y, t.z, p.x, p.y, p.z, axis.x, axis.y, axis.z, 20, true);
 
+        // Convert tilt angle to radians if necessary
+        const rotation = isDegrees ? angle * (Math.PI / 180) : angle;
+
+        // Calculate tilt axis given camera's rotation
+        const r: Point3d = this.cream.rotate(a.x, a.y, a.z, p.x, p.y, p.z, n.x, n.y, n.z, this.getInverseRotation(), false);
+
+        // Perform tilt
+        const tilt: Point3d = this.cream.rotate(t.x, t.y, t.z, p.x, p.y, p.z, r.x, r.y, r.z, rotation, false);
+
+        // Store result in camera object
         this.camera.target = {
-            x: rotated.x,
-            y: rotated.y,
-            z: rotated.z
+            x: tilt.x,
+            y: tilt.y,
+            z: tilt.z
         };
     }
 

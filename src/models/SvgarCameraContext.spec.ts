@@ -279,6 +279,15 @@ describe('given a default camera context', () => {
             expect(result).to.be.true;
         });
 
-    })
+    });
+
+    describe('when tilting a rotated default camera', () => {
+
+        beforeEach(() => {
+            svgar.camera.rotate(23);
+            svgar.camera.tilt(40, true);
+        });
+
+    });
 
 });
