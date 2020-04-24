@@ -288,19 +288,43 @@ describe('given a default camera context', () => {
             svgar.camera.tilt(40, true);
         });
 
-        it('should set the camera to the correct x value', () => {
+        it('should set the camera target to the correct x value', () => {
             const result = Math.abs(svgar.camera.target.x - (-0.251157)) < tolerance;
-            console.log(svgar.camera.target);
             expect(result).to.be.true;
         });
 
-        it('should set the camera to the correct y value', () => {
+        it('should set the camera target to the correct y value', () => {
             const result = Math.abs(svgar.camera.target.y - 0.591689) < tolerance;
             expect(result).to.be.true;
         });
 
-        it('should set the camera to the correct z value', () => {
+        it('should set the camera target to the correct z value', () => {
             const result = Math.abs(svgar.camera.target.z - (-0.766044)) < tolerance;
+            expect(result).to.be.true;
+        });
+
+    });
+
+    describe('when tilting a rotated and moved default camera', () => {
+
+        beforeEach(() => {
+            svgar.camera.move(2, 3, -4.25);
+            svgar.camera.rotate(23, true);
+            svgar.camera.tilt(40, true);
+        });
+
+        it('should set the camera target to the correct x value', () => {
+            const result = Math.abs(svgar.camera.target.x - 1.74884) < tolerance;
+            expect(result).to.be.true;
+        });
+
+        it('should set the camera target to the correct y value', () => {
+            const result = Math.abs(svgar.camera.target.y - 3.59169) < tolerance;
+            expect(result).to.be.true;
+        });
+
+        it('should set the camera target to the correct z value', () => {
+            const result = Math.abs(svgar.camera.target.z - (-5.01604)) < tolerance;
             expect(result).to.be.true;
         });
 

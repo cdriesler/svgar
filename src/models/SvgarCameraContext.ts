@@ -85,7 +85,7 @@ export default class SvgarCameraContext {
     }
 
     /**
-     * @returns {Point3d} Vector representation of positive x axis
+     * @returns {Point3d} Vector representation of positive x axis anchored at the origin
      */
     private getBasisX(): Point3d {
         const n = this.getNormal();
@@ -100,7 +100,7 @@ export default class SvgarCameraContext {
     }
 
     /**
-     * @returns {Point3d} Vector representation of positive y axis
+     * @returns {Point3d} Vector representation of positive y axis anchored at the origin
      */
     private getBasisY(): Point3d {
         const n = this.getNormal();
@@ -150,6 +150,17 @@ export default class SvgarCameraContext {
             },
             rotation: 0
         }
+    }
+
+    /**
+     * Translate camera position and target in world coordinate space.
+     * @param {number} x Magnitude of x coordinate translation. 
+     * @param {number} y Magnitude of y coordinate translation. 
+     * @param {number} z Magnitude of z coordinate translation. 
+     */
+    public move(x: number, y: number, z: number): void {
+        this.movePosition(x, y, z);
+        this.moveTarget(x, y, z);
     }
 
     /**
@@ -219,7 +230,7 @@ export default class SvgarCameraContext {
         const rotation = isDegrees ? angle * (Math.PI / 180) : angle;
 
         // Perform tilt
-        const tilt: Point3d = this.cream.rotate(t.x, t.y, t.z, p.x, p.y, p.z, a.x, a.y, a.z, rotation, false);
+        const tilt: Point3d = this.cream.rotate(t.x, t.y, t.z, p.x, p.y, p.z, a.x + p.x, a.y + p.y, a.z + p.z, rotation, false);
 
         // Store result in camera object
         this.camera.target = {
