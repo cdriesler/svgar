@@ -252,12 +252,11 @@ export default class SvgarCameraContext {
 
     /**
      * Rotate camera position about y axis of orientation plane at target location.
-     * Optionally rotate axis about plane normal. Current camera rotation is ignored.
-     * @param {number} angle Angle (in radians) to rotate position. 
-     * @param {number} tilt Angle (in radians) to rotate initial axis. 
+     * Current camera rotation is necessarily considered.
+     * @param {number} angle Angle (in radians) to rotate position.
      * @param {boolean} isDegrees Optional flag to decalre input angles are in degrees. 
      */
-    public orbit(angle: number, tilt: number, isDegrees: boolean = false): void {
+    public orbit(angle: number, isDegrees: boolean = false): void {
 
     }
 
