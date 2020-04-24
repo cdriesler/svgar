@@ -85,14 +85,14 @@ export default class SvgarCameraContext {
     }
 
     /**
-     * @returns {Point3d} Vector representation of positive y axis
+     * @returns {Point3d} Vector representation of positive x axis
      */
-    private getBasisY(): Point3d {
+    private getBasisX(): Point3d {
         const n = this.getNormal();
         const y: Point3d = this.normalIsVertical()[0] 
             ? { x: 1, y: 0, z: 0 }
             : this.cream.cross(n.x, n.y, n.z, 0, 0, 1);
-        const rot: Point3d = this.cream.rotate(y.x, y.y, y.z, 0, 0, 0, n.x, n.y, n.z, this.rotation, false);
+        const rot: Point3d = this.cream.rotate(y.x, y.y, y.z, 0, 0, 0, n.x, n.y, n.z, this.getInverseRotation(), false);
         
         const pt: Point3d = { x: rot.x, y: rot.y, z: rot.z };
 
@@ -100,11 +100,11 @@ export default class SvgarCameraContext {
     }
 
     /**
-     * @returns {Point3d} Vector representation of positive x axis
+     * @returns {Point3d} Vector representation of positive y axis
      */
-    private getBasisX(): Point3d {
+    private getBasisY(): Point3d {
         const n = this.getNormal();
-        const y = this.getBasisY();
+        const y = this.getBasisX();
 
         return this.cream.rotate(y.x, y.y, y.z, 0, 0, 0, n.x, n.y, n.z, -90, true);
     }
@@ -200,7 +200,7 @@ export default class SvgarCameraContext {
         const rotation = isDegrees
             ? (Math.PI / 180) * angle
             : angle;
-        this.rotation = this.rotation += rotation;
+        this.rotation = this.rotation + rotation;
     }
 
     /**
@@ -211,19 +211,15 @@ export default class SvgarCameraContext {
      */
     public tilt(angle: number, isDegrees: boolean = false): void {
         // Cache necessary initial values
-        const a = this.getBasisY();
-        const n = this.getNormal();
+        const a = this.getBasisX();
         const p = this.position;
         const t = this.target;
 
         // Convert tilt angle to radians if necessary
         const rotation = isDegrees ? angle * (Math.PI / 180) : angle;
 
-        // Calculate tilt axis given camera's rotation
-        const r: Point3d = this.cream.rotate(a.x, a.y, a.z, p.x, p.y, p.z, n.x, n.y, n.z, this.getInverseRotation(), false);
-
         // Perform tilt
-        const tilt: Point3d = this.cream.rotate(t.x, t.y, t.z, p.x, p.y, p.z, r.x, r.y, r.z, rotation, false);
+        const tilt: Point3d = this.cream.rotate(t.x, t.y, t.z, p.x, p.y, p.z, a.x, a.y, a.z, rotation, false);
 
         // Store result in camera object
         this.camera.target = {

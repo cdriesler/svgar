@@ -284,8 +284,24 @@ describe('given a default camera context', () => {
     describe('when tilting a rotated default camera', () => {
 
         beforeEach(() => {
-            svgar.camera.rotate(23);
+            svgar.camera.rotate(23, true);
             svgar.camera.tilt(40, true);
+        });
+
+        it('should set the camera to the correct x value', () => {
+            const result = Math.abs(svgar.camera.target.x - (-0.251157)) < tolerance;
+            console.log(svgar.camera.target);
+            expect(result).to.be.true;
+        });
+
+        it('should set the camera to the correct y value', () => {
+            const result = Math.abs(svgar.camera.target.y - 0.591689) < tolerance;
+            expect(result).to.be.true;
+        });
+
+        it('should set the camera to the correct z value', () => {
+            const result = Math.abs(svgar.camera.target.z - (-0.766044)) < tolerance;
+            expect(result).to.be.true;
         });
 
     });
