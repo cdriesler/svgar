@@ -330,4 +330,29 @@ describe('given a default camera context', () => {
 
     });
 
+    describe('when tilting an arbitrarily positioned camera', () => {
+
+        beforeEach(() => {
+            svgar.camera.position = { x: -0.0110431, y: -16.226, z: 12.2101 }
+            svgar.camera.target = { x: -1.61355, y: -18.4241, z: 8.71716 }
+            svgar.camera.tilt(-27, true);
+        });
+
+        it('should set the camera target to the correct x value', () => {
+            const result = Math.abs(svgar.camera.target.x - (-0.504682)) < tolerance;
+            expect(result).to.be.true;
+        });
+
+        it('should set the camera target to the correct y value', () => {
+            const result = Math.abs(svgar.camera.target.y - (-16.9031)) < tolerance;
+            expect(result).to.be.true;
+        });
+
+        it('should set the camera target to the correct z value', () => {
+            const result = Math.abs(svgar.camera.target.z - 7.86293) < tolerance;
+            expect(result).to.be.true;
+        });
+
+    });
+
 });
