@@ -386,12 +386,12 @@ describe('given a default camera context', () => {
         });
 
         it('should set the camera target to the correct x value', () => {
-            const result = Math.abs(svgar.camera.target.x - (-0.264887)) < tolerance;
+            const result = Math.abs(svgar.camera.target.x - 0.264887) < tolerance;
             expect(result).to.be.true;
         });
 
         it('should set the camera target to the correct y value', () => {
-            const result = Math.abs(svgar.camera.target.y - 0.264887) < tolerance;
+            const result = Math.abs(svgar.camera.target.y - (-0.264887)) < tolerance;
             expect(result).to.be.true;
         });
 
@@ -411,12 +411,12 @@ describe('given a default camera context', () => {
         });
 
         it('should set the camera target to the correct x value', () => {
-            const result = Math.abs(svgar.camera.target.x - (-5.19201)) < tolerance;
+            const result = Math.abs(svgar.camera.target.x - (-3.8079)) < tolerance;
             expect(result).to.be.true;
         });
 
         it('should set the camera target to the correct y value', () => {
-            const result = Math.abs(svgar.camera.target.y - (-9.06054)) < tolerance;
+            const result = Math.abs(svgar.camera.target.y - (-8.9394)) < tolerance;
             expect(result).to.be.true;
         });
 

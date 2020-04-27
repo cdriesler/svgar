@@ -247,7 +247,23 @@ export default class SvgarCameraContext {
      * @param {boolean} isDegrees Optional flag to declare input angle is in degrees.
      */
     public pan(angle: number, isDegrees: boolean = false): void {
+        // Cache necessary initial values;
+        const a = this.getBasisY();
+        const p = this.position;
+        const t = this.target;
 
+        // Convert tilt angle to radians if necessary
+        const rotation = isDegrees ? angle * (Math.PI / 180) : angle;
+
+        // Perform pan
+        const pan: Point3d = this.cream.rotate(t.x, t.y, t.z, p.x, p.y, p.z, a.x + p.x, a.y + p.y, a.z + p.z, rotation, false);
+
+        // Store result in camera object
+        this.camera.target = {
+            x: pan.x,
+            y: pan.y,
+            z: pan.z
+        };
     }
 
     /**
