@@ -247,12 +247,12 @@ export default class SvgarCameraContext {
      * @param {boolean} isDegrees Optional flag to declare input angle is in degrees.
      */
     public pan(angle: number, isDegrees: boolean = false): void {
-        // Cache necessary initial values;
+        // Cache necessary initial values
         const a = this.getBasisY();
         const p = this.position;
         const t = this.target;
 
-        // Convert tilt angle to radians if necessary
+        // Convert pan angle to radians if necessary
         const rotation = isDegrees ? angle * (Math.PI / 180) : angle;
 
         // Perform pan
@@ -270,10 +270,26 @@ export default class SvgarCameraContext {
      * Rotate camera position about y axis of orientation plane at target location.
      * Current camera rotation is necessarily considered.
      * @param {number} angle Angle (in radians) to rotate position.
-     * @param {boolean} isDegrees Optional flag to decalre input angles are in degrees. 
+     * @param {boolean} isDegrees Optional flag to declare input angles are in degrees. 
      */
     public orbit(angle: number, isDegrees: boolean = false): void {
+        // Cache necessary initial values
+        const a = this.getBasisY();
+        const p = this.position;
+        const t = this.target;
 
+        // Convert orbit angle to radians if necessary
+        const rotation = isDegrees ? angle * (Math.PI / 180) : angle;
+
+        // Perform orbit
+        const orbit: Point3d = this.cream.rotate(p.x, p.y, p.z, t.x, t.y, t.z, a.x + t.x, a.y + t.y, a.z + t.z, rotation, false);
+
+        // Store result in camera object
+        this.camera.position = {
+            x: orbit.x,
+            y: orbit.y,
+            z: orbit.z
+        };
     }
 
 }
