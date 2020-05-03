@@ -107,6 +107,16 @@ pub fn cross(x: f64, y: f64, z: f64, a: f64, b: f64, c: f64) -> Point3d {
     return Point3d::cross(&vector_a, &vector_b);
 }
 
+// Helper function for wasm_bindgen. Sets vector amplitude to given value.
+#[wasm_bindgen]
+pub fn amplitude(x: f64, y: f64, z: f64, amplitude: f64) -> Point3d {
+    let v = Point3d::new(x, y, z);
+    let v_n = v.normalize();
+    let v_s = Point3d::scale(&v_n, amplitude);
+
+    return v_s;
+}
+
 #[cfg(test)]
 mod point3d {
 

@@ -199,7 +199,35 @@ export default class SvgarCameraContext {
      * @param {number} y Magnitude of y coordinate translation. 
      */
     public track(x: number, y: number): void {
+        // Cache initial axis positions
+        const xBasis = this.getBasisX();
+        const yBasis = this.getBasisY();
+        const p = this.camera.position;
+        const t = this.camera.target;
 
+        // Scale axis vectors to track amounts
+        const xFactor: Point3d = this.cream.amplitude(xBasis.x, xBasis.y, xBasis.z, x);
+        const yFactor: Point3d = this.cream.amplitude(yBasis.x, yBasis.y, yBasis.z, y);
+
+        // Calculate total translation
+        const tx: Point3d = {
+            x: xFactor.x + yFactor.x,
+            y: xFactor.y + yFactor.y,
+            z: xFactor.z + yFactor.z
+        }
+
+        // Apply translation
+        this.camera.position = {
+            x: p.x + tx.x,
+            y: p.y + tx.y,
+            z: p.z + tx.z
+        }
+
+        this.camera.target = {
+            x: t.x + tx.x,
+            y: t.y + tx.y,
+            z: t.z + tx.z
+        }
     }
 
     /**
