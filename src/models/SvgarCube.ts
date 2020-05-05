@@ -1,7 +1,6 @@
 import rhino3dm from 'rhino3dm';
 import CameraContext from './SvgarCameraContext';
 import ElementsContext from './SvgarElementsContext';
-import Element from './SvgarElement';
 
 export default class SvgarCube {
     
