@@ -1,11 +1,12 @@
 import rhino3dm from 'rhino3dm';
 import CameraContext from './SvgarCameraContext';
+import ElementsContext from './SvgarElementsContext';
 import Element from './SvgarElement';
 
 export default class SvgarCube {
     
     public camera: CameraContext | undefined;
-    public elements: Element[];
+    public elements: ElementsContext | undefined;
 
     public svg: string = '';
 
@@ -13,7 +14,7 @@ export default class SvgarCube {
     private creamModule: undefined | any;
     
     constructor() {
-        this.elements = [];
+        
     }
 
     /**
@@ -33,6 +34,8 @@ export default class SvgarCube {
         // ( Chuck ) Current version of rhino3dm module "promise" does not resolve. Terrible temp workaround below.
         const wait = new Promise(resolve => setTimeout(resolve, 1000));
         await wait;
+
+        this.elements = new ElementsContext(this.creamModule, this.rhinoModule);
 
         return this.creamModule != undefined && this.rhinoModule != undefined;
     }
