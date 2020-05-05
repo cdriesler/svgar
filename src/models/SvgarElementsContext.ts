@@ -65,7 +65,9 @@ export default class SvgarElementsContext {
     }
 
     public add = {
-        rhino: {},
+        rhino: {
+            
+        },
         svgar: {
             lineCurve: ((from: Point3d, to: Point3d) => {
                 this.addElement(new LineCurve(from, to));
