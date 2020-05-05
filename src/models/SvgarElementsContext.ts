@@ -1,5 +1,6 @@
 import SvgarGeometry from './../geometry/SvgarGeometry'
 import LineCurve from "./../geometry/svgar/LineCurve";
+import rhino3dm, { RhinoModule } from 'rhino3dm';
 
 interface Point3d {
     x: number,
@@ -33,7 +34,7 @@ export default class SvgarElementsContext {
     
     private elements: SvgarElement[] = [];
     private cream: any;
-    private rhino: any;
+    private rhino: RhinoModule;
     
     /**
      * @hideconstructor
@@ -64,9 +65,17 @@ export default class SvgarElementsContext {
         });
     }
 
+    private addElementFromRhino(geometry: any): void {
+        const object = (this.rhino.CommonObject as any).decode(geometry);
+        console.log(object.constructor.name);
+        console.log(object.pointAtEnd);
+    }
+
     public add = {
         rhino: {
-            
+            object: ((object: any) => {
+                this.addElementFromRhino(object);
+            }).bind(this) as (object: any) => void
         },
         svgar: {
             lineCurve: ((from: Point3d, to: Point3d) => {
