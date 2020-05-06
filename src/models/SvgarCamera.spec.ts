@@ -36,6 +36,116 @@ describe('given a default camera', () => {
 
 });
 
+describe('given a default camera before panning', () => {
+
+    let svgar: Cube;
+    const tolerance = 0.01;
+
+    let x: Point3d;
+    let y: Point3d;
+    let z: Point3d;
+
+    before(async () => {
+        svgar = new Cube();
+        await svgar.initialize();
+    });
+
+    beforeEach(() => {
+        svgar.camera.reset();
+    });
+
+    describe('when panned 127 degrees', () => {
+
+        beforeEach(() => {
+            svgar.camera.pan(127, true);
+            const [i, j, k] = svgar.camera.stage();
+            x = i;
+            y = j;
+            z = k;
+        });
+
+        it('should correctly set basis x-axis', () => {
+            const target: Point3d = { x: -0.601815, y: 0, z: -0.798636 }
+            const result = equalsWithinTolerance(x, target, tolerance);
+            expect(result).to.be.true;
+        });
+
+        it('should correctly set basis y-axis', () => {
+            const target: Point3d = { x: 0, y: 1, z: 0 }
+            const result = equalsWithinTolerance(y, target, tolerance);
+            expect(result).to.be.true;
+        });
+
+        it('should correctly set basis z-axis', () => {
+            const target: Point3d = { x: 0.798636, y: 0, z: -0.601815 }
+            const result = equalsWithinTolerance(z, target, tolerance);
+            expect(result).to.be.true;
+        });
+
+    });
+
+    describe('when panned 487 degrees', () => {
+
+        beforeEach(() => {
+            svgar.camera.pan(487, true);
+            const [i, j, k] = svgar.camera.stage();
+            x = i;
+            y = j;
+            z = k;
+        });
+
+        it('should correctly set basis x-axis', () => {
+            const target: Point3d = { x: -0.601815, y: 0, z: -0.798636 }
+            const result = equalsWithinTolerance(x, target, tolerance);
+            expect(result).to.be.true;
+        });
+
+        it('should correctly set basis y-axis', () => {
+            const target: Point3d = { x: 0, y: 1, z: 0 }
+            const result = equalsWithinTolerance(y, target, tolerance);
+            expect(result).to.be.true;
+        });
+
+        it('should correctly set basis z-axis', () => {
+            const target: Point3d = { x: 0.798636, y: 0, z: -0.601815 }
+            const result = equalsWithinTolerance(z, target, tolerance);
+            expect(result).to.be.true;
+        });
+
+    });
+
+    describe('when panned -5.25 degrees', () => {
+
+        beforeEach(() => {
+            svgar.camera.pan(-5.25, true);
+            const [i, j, k] = svgar.camera.stage();
+            x = i;
+            y = j;
+            z = k;
+        });
+
+        it('should correctly set basis x-axis', () => {
+            const target: Point3d = { x: 0.995805, y: 0, z: 0.0915016 }
+            const result = equalsWithinTolerance(x, target, tolerance);
+            expect(result).to.be.true;
+        });
+
+        it('should correctly set basis y-axis', () => {
+            const target: Point3d = { x: 0, y: 1, z: 0 }
+            const result = equalsWithinTolerance(y, target, tolerance);
+            expect(result).to.be.true;
+        });
+
+        it('should correctly set basis z-axis', () => {
+            const target: Point3d = { x: -0.0915016, y: 0, z: 0.995805 }
+            const result = equalsWithinTolerance(z, target, tolerance);
+            expect(result).to.be.true;
+        });
+
+    });
+
+});
+
 describe('given a default camera before tilting', () => {
 
     let svgar: Cube;

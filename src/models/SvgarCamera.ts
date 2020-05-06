@@ -48,9 +48,26 @@ export default class SvgarCamera {
 
     }
 
-    // + left
+    /**
+     * Rotates basis x and z axis about current y axis.
+     * @remarks Positive values will look 'left' in picture plane.
+     * @param {number} angle Rotation angle in radians.
+     * @param {boolean} isDegrees Optional flag to declare input value is in degrees.
+     */
     public pan(angle: number, isDegrees: boolean = false): void {
+        // Cache initial values
+        const [x, y, z] = this.stage();
 
+        // Convert angle to radians if necessary
+        const rotation = isDegrees ? angle * (Math.PI / 180) : angle;
+
+        // Perform rotations
+        const xr: Point3d = this.cream.rotate(x.x, x.y, x.z, 0, 0, 0, y.x, y.y, y.z, rotation, false);
+        const zr: Point3d = this.cream.rotate(z.x, z.y, z.z, 0, 0, 0, y.x, y.y, y.z, rotation, false);
+
+        // Cache result values
+        this.basisX = xr;
+        this.basisZ = zr;
     }
 
     /**
