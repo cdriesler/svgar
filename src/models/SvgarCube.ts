@@ -29,13 +29,10 @@ export default class SvgarCube {
         this.cameraContext = new CameraContext(this.creamModule);
         this.camera = new Camera(this.creamModule);
 
-        rhino3dm().then(rhino => {
+        await rhino3dm().then(rhino => {
             this.rhinoModule = rhino;
+            delete rhino['then']
         });
-
-        // ( Chuck ) Current version of rhino3dm module "promise" does not resolve. Terrible temp workaround below.
-        const wait = new Promise(resolve => setTimeout(resolve, 1500));
-        await wait;
 
         this.elements = new ElementsContext(this.creamModule, this.rhinoModule);
 
