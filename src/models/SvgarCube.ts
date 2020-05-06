@@ -34,7 +34,7 @@ export default class SvgarCube {
         });
 
         // ( Chuck ) Current version of rhino3dm module "promise" does not resolve. Terrible temp workaround below.
-        const wait = new Promise(resolve => setTimeout(resolve, 1000));
+        const wait = new Promise(resolve => setTimeout(resolve, 1500));
         await wait;
 
         this.elements = new ElementsContext(this.creamModule, this.rhinoModule);
