@@ -1,10 +1,12 @@
 import rhino3dm from 'rhino3dm';
+import Camera from './SvgarCamera';
 import CameraContext from './SvgarCameraContext';
 import ElementsContext from './SvgarElementsContext';
 
 export default class SvgarCube {
     
-    public camera: CameraContext | undefined;
+    public camera: Camera | undefined;
+    public cameraContext: CameraContext | undefined;
     public elements: ElementsContext | undefined;
 
     public svg: string = '';
@@ -24,7 +26,8 @@ export default class SvgarCube {
     public async initialize(): Promise<boolean> {
 
         this.creamModule = await import('./../wasm/cream');
-        this.camera = new CameraContext(this.creamModule);
+        this.cameraContext = new CameraContext(this.creamModule);
+        this.camera = new Camera(this.creamModule);
 
         rhino3dm().then(rhino => {
             this.rhinoModule = rhino;
@@ -47,7 +50,7 @@ export default class SvgarCube {
     public render(w: number, h: number): string {
 
         const camera = this.camera;
-        const [position, normal, extents] = this.camera.compile();
+        const [position, normal, extents] = this.cameraContext.compile();
 
         function toSvg(coordinates: number[]): string {
             if (coordinates.length < 12) return '';

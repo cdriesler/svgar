@@ -13,13 +13,13 @@ describe('given a default camera context', () => {
     });
 
     beforeEach(() => {
-        svgar.camera.reset();
+        svgar.cameraContext.reset();
     })
 
     describe('when initialized', () => {
 
         it('should store a camera context object in the cube', () => {
-            expect(svgar.camera).to.not.be.undefined;
+            expect(svgar.cameraContext).to.not.be.undefined;
         });
 
     });
@@ -27,7 +27,7 @@ describe('given a default camera context', () => {
     describe('when modifying camera position', () => {
 
         beforeEach(() => {
-            svgar.camera.position = {
+            svgar.cameraContext.position = {
                 x: 0,
                 y: 0,
                 z: 0
@@ -35,21 +35,21 @@ describe('given a default camera context', () => {
         });
 
         it('should allow it to be changed through context property', () => {
-            svgar.camera.position = {
+            svgar.cameraContext.position = {
                 x: 1,
                 y: 2,
                 z: 3
             }
-            expect(svgar.camera.position.x).to.equal(1);
-            expect(svgar.camera.position.y).to.equal(2);
-            expect(svgar.camera.position.z).to.equal(3);
+            expect(svgar.cameraContext.position.x).to.equal(1);
+            expect(svgar.cameraContext.position.y).to.equal(2);
+            expect(svgar.cameraContext.position.z).to.equal(3);
         });
 
         it('should allow it to be changed through context move() function', () => {
-            svgar.camera.movePosition(4, 5, 6);
-            expect(svgar.camera.position.x).to.equal(4);
-            expect(svgar.camera.position.y).to.equal(5);
-            expect(svgar.camera.position.z).to.equal(6);
+            svgar.cameraContext.movePosition(4, 5, 6);
+            expect(svgar.cameraContext.position.x).to.equal(4);
+            expect(svgar.cameraContext.position.y).to.equal(5);
+            expect(svgar.cameraContext.position.z).to.equal(6);
         });
 
     });
@@ -57,7 +57,7 @@ describe('given a default camera context', () => {
     describe('when modifying camera target', () => {
 
         beforeEach(() => {
-            svgar.camera.target = {
+            svgar.cameraContext.target = {
                 x: 0,
                 y: 0,
                 z: 0
@@ -65,21 +65,21 @@ describe('given a default camera context', () => {
         });
 
         it('should allow it to be changed through context property', () => {
-            svgar.camera.target = {
+            svgar.cameraContext.target = {
                 x: 1,
                 y: 2,
                 z: 3
             }
-            expect(svgar.camera.target.x).to.equal(1);
-            expect(svgar.camera.target.y).to.equal(2);
-            expect(svgar.camera.target.z).to.equal(3);
+            expect(svgar.cameraContext.target.x).to.equal(1);
+            expect(svgar.cameraContext.target.y).to.equal(2);
+            expect(svgar.cameraContext.target.z).to.equal(3);
         });
 
         it('should allow it to be changed through context move() function', () => {
-            svgar.camera.moveTarget(4, 5, 6);
-            expect(svgar.camera.target.x).to.equal(4);
-            expect(svgar.camera.target.y).to.equal(5);
-            expect(svgar.camera.target.z).to.equal(6);
+            svgar.cameraContext.moveTarget(4, 5, 6);
+            expect(svgar.cameraContext.target.x).to.equal(4);
+            expect(svgar.cameraContext.target.y).to.equal(5);
+            expect(svgar.cameraContext.target.z).to.equal(6);
         });
 
     });
@@ -87,29 +87,29 @@ describe('given a default camera context', () => {
     describe('when modifying camera rotation', () => {
 
         beforeEach(() => {
-            svgar.camera.rotation = 0;
+            svgar.cameraContext.rotation = 0;
         });
 
         it('should allow it to be changed through context property', () => {
-            svgar.camera.rotation = 25;
-            expect(svgar.camera.rotation).to.equal(25);
+            svgar.cameraContext.rotation = 25;
+            expect(svgar.cameraContext.rotation).to.equal(25);
         });
 
         it('should allow it to be changed with degrees', () => {
-            svgar.camera.rotate(90, true);
-            expect(svgar.camera.rotation * (180/Math.PI)).to.equal(90);
+            svgar.cameraContext.rotate(90, true);
+            expect(svgar.cameraContext.rotation * (180/Math.PI)).to.equal(90);
         });
 
         it('should allow it to be changed with radians', () => {
-            svgar.camera.rotate(0.544);
-            expect(svgar.camera.rotation).to.equal(0.544);
+            svgar.cameraContext.rotate(0.544);
+            expect(svgar.cameraContext.rotation).to.equal(0.544);
         });
 
         it('should allow it to be changed consecutively', () => {
-            svgar.camera.rotate(0.33);
-            svgar.camera.rotate(-0.25);
-            svgar.camera.rotate(0.25);
-            expect(svgar.camera.rotation).to.equal(0.33);
+            svgar.cameraContext.rotate(0.33);
+            svgar.cameraContext.rotate(-0.25);
+            svgar.cameraContext.rotate(0.25);
+            expect(svgar.cameraContext.rotation).to.equal(0.33);
         });
 
     });
@@ -117,19 +117,19 @@ describe('given a default camera context', () => {
     describe('when asking the default camera to track', () => {
 
         beforeEach(() => {
-            svgar.camera.track(2, 3.5);
+            svgar.cameraContext.track(2, 3.5);
         });
 
         it('should move to the correct x coordinate', () => {
-            expect(svgar.camera.position.x).to.equal(2);
+            expect(svgar.cameraContext.position.x).to.equal(2);
         });
 
         it('should move to the correct y coordinate', () => {
-            expect(svgar.camera.position.y).to.equal(3.5);
+            expect(svgar.cameraContext.position.y).to.equal(3.5);
         });
 
         it('should move to the correct z coordinate', () => {
-            expect(svgar.camera.position.z).to.equal(0);
+            expect(svgar.cameraContext.position.z).to.equal(0);
         })
 
     });
@@ -137,22 +137,22 @@ describe('given a default camera context', () => {
     describe('when asking a rotated default camera to track', () => {
 
         beforeEach(() => {
-            svgar.camera.rotate(45, true);
-            svgar.camera.track(1.5, 2);
+            svgar.cameraContext.rotate(45, true);
+            svgar.cameraContext.track(1.5, 2);
         });
 
         it('should move to the correct x coordinate', () => {
-            const result = Math.abs(svgar.camera.position.x - (-0.353553)) < tolerance;
+            const result = Math.abs(svgar.cameraContext.position.x - (-0.353553)) < tolerance;
             expect(result).to.be.true;
         });
 
         it('should move to the correct y coordinate', () => {
-            const result = Math.abs(svgar.camera.position.y - 2.47487) < tolerance;
+            const result = Math.abs(svgar.cameraContext.position.y - 2.47487) < tolerance;
             expect(result).to.be.true;
         });
 
         it('should move to the correct z coordinate', () => {
-            expect(svgar.camera.position.z).to.equal(0);
+            expect(svgar.cameraContext.position.z).to.equal(0);
         })
 
     });
@@ -160,22 +160,22 @@ describe('given a default camera context', () => {
     describe('when asking a tilted camera to track', () => {
 
         beforeEach(() => {
-            svgar.camera.tilt(30, true);
-            svgar.camera.track(-2, 3.2);
+            svgar.cameraContext.tilt(30, true);
+            svgar.cameraContext.track(-2, 3.2);
         });
 
         it('should move to the correct x coordinate', () => {
-            const result = Math.abs(svgar.camera.position.x - (-2)) < tolerance;
+            const result = Math.abs(svgar.cameraContext.position.x - (-2)) < tolerance;
             expect(result).to.be.true;
         });
 
         it('should move to the correct y coordinate', () => {
-            const result = Math.abs(svgar.camera.position.y - 2.77128) < tolerance;
+            const result = Math.abs(svgar.cameraContext.position.y - 2.77128) < tolerance;
             expect(result).to.be.true;
         });
 
         it('should move to the correct x coordinate', () => {
-            const result = Math.abs(svgar.camera.position.z - 1.6) < tolerance;
+            const result = Math.abs(svgar.cameraContext.position.z - 1.6) < tolerance;
             expect(result).to.be.true;
         });
 
@@ -184,22 +184,22 @@ describe('given a default camera context', () => {
     describe('when asking a panned camera to track', () => {
         
         beforeEach(() => {
-            svgar.camera.pan(-15, true);
-            svgar.camera.track(2.2, -5);
+            svgar.cameraContext.pan(-15, true);
+            svgar.cameraContext.track(2.2, -5);
         });
 
         it('should move to the correct x coordinate', () => {
-            const result = Math.abs(svgar.camera.position.x - 2.12504) < tolerance;
+            const result = Math.abs(svgar.cameraContext.position.x - 2.12504) < tolerance;
             expect(result).to.be.true;
         });
 
         it('should move to the correct y coordinate', () => {
-            const result = Math.abs(svgar.camera.position.y - (-5)) < tolerance;
+            const result = Math.abs(svgar.cameraContext.position.y - (-5)) < tolerance;
             expect(result).to.be.true;
         });
 
         it('should move to the correct z coordinate', () => {
-            const result = Math.abs(svgar.camera.position.z - (-0.569402)) < tolerance;
+            const result = Math.abs(svgar.cameraContext.position.z - (-0.569402)) < tolerance;
             expect(result).to.be.true;
         });
 
@@ -208,24 +208,24 @@ describe('given a default camera context', () => {
     describe('when asking an arbitrarily angled and rotated camera to track', () => {
 
         beforeEach(() => {
-            svgar.camera.tilt(20, true);
-            svgar.camera.pan(-35, true);
-            svgar.camera.rotate(27, true);
-            svgar.camera.track(-4.25, 2.1);
+            svgar.cameraContext.tilt(20, true);
+            svgar.cameraContext.pan(-35, true);
+            svgar.cameraContext.rotate(27, true);
+            svgar.cameraContext.track(-4.25, 2.1);
         });
 
         it('should move to the correct x coordinate', () => {
-            const result = Math.abs(svgar.camera.position.x - (-2.32098)) < tolerance;
+            const result = Math.abs(svgar.cameraContext.position.x - (-2.32098)) < tolerance;
             expect(result).to.be.true;
         });
 
         it('should move to the correct y coordinate', () => {
-            const result = Math.abs(svgar.camera.position.y - 3.01553) < tolerance;
+            const result = Math.abs(svgar.cameraContext.position.y - 3.01553) < tolerance;
             expect(result).to.be.true;
         });
 
         it('should move to the correct z coordinate', () => {
-            const result = Math.abs(svgar.camera.position.z - 2.82703) < tolerance;
+            const result = Math.abs(svgar.cameraContext.position.z - 2.82703) < tolerance;
             expect(result).to.be.true;
         });
 
@@ -234,26 +234,26 @@ describe('given a default camera context', () => {
     describe('when asking an arbitrarily angled, rotated, and translated camera to track', () => {
 
         beforeEach(() => {
-            svgar.camera.tilt(20, true);
-            svgar.camera.pan(-35, true);
-            svgar.camera.rotate(27, true);
-            svgar.camera.movePosition(2, 3.3, -4.2);
-            svgar.camera.moveTarget(2, 3.3, -4.2);
-            svgar.camera.track(3.1, 2.1);
+            svgar.cameraContext.tilt(20, true);
+            svgar.cameraContext.pan(-35, true);
+            svgar.cameraContext.rotate(27, true);
+            svgar.cameraContext.movePosition(2, 3.3, -4.2);
+            svgar.cameraContext.moveTarget(2, 3.3, -4.2);
+            svgar.cameraContext.track(3.1, 2.1);
         });
 
         it('should move to the correct x coordinate', () => {
-            const result = Math.abs(svgar.camera.position.x - 5.04356) < tolerance;
+            const result = Math.abs(svgar.cameraContext.position.x - 5.04356) < tolerance;
             expect(result).to.be.true;
         });
 
         it('should move to the correct y coordinate', () => {
-            const result = Math.abs(svgar.camera.position.y - 4.46466) < tolerance;
+            const result = Math.abs(svgar.cameraContext.position.y - 4.46466) < tolerance;
             expect(result).to.be.true;
         });
 
         it('should move to the correct z coordinate', () => {
-            const result = Math.abs(svgar.camera.position.z - (-6.04399)) < tolerance;
+            const result = Math.abs(svgar.cameraContext.position.z - (-6.04399)) < tolerance;
             expect(result).to.be.true;
         });
 
@@ -262,20 +262,20 @@ describe('given a default camera context', () => {
     describe('when tilting the default camera', () => {
 
         beforeEach(() => {
-            svgar.camera.tilt(20, true);
+            svgar.cameraContext.tilt(20, true);
         });
 
         it('should set the camera target to the correct x value', () => {
-            expect(svgar.camera.target.x).to.equal(0);
+            expect(svgar.cameraContext.target.x).to.equal(0);
         });
 
         it('should set the camera target to the correct y value', () => {
-            const result = Math.abs(svgar.camera.target.y - 0.34202) < tolerance;
+            const result = Math.abs(svgar.cameraContext.target.y - 0.34202) < tolerance;
             expect(result).to.be.true;
         });
 
         it('should set the camera target to the correct z value', () => {
-            const result = Math.abs(svgar.camera.target.z - (-0.939693)) < tolerance;
+            const result = Math.abs(svgar.cameraContext.target.z - (-0.939693)) < tolerance;
             expect(result).to.be.true;
         });
 
@@ -284,22 +284,22 @@ describe('given a default camera context', () => {
     describe('when tilting a rotated default camera', () => {
 
         beforeEach(() => {
-            svgar.camera.rotate(23, true);
-            svgar.camera.tilt(40, true);
+            svgar.cameraContext.rotate(23, true);
+            svgar.cameraContext.tilt(40, true);
         });
 
         it('should set the camera target to the correct x value', () => {
-            const result = Math.abs(svgar.camera.target.x - (-0.251157)) < tolerance;
+            const result = Math.abs(svgar.cameraContext.target.x - (-0.251157)) < tolerance;
             expect(result).to.be.true;
         });
 
         it('should set the camera target to the correct y value', () => {
-            const result = Math.abs(svgar.camera.target.y - 0.591689) < tolerance;
+            const result = Math.abs(svgar.cameraContext.target.y - 0.591689) < tolerance;
             expect(result).to.be.true;
         });
 
         it('should set the camera target to the correct z value', () => {
-            const result = Math.abs(svgar.camera.target.z - (-0.766044)) < tolerance;
+            const result = Math.abs(svgar.cameraContext.target.z - (-0.766044)) < tolerance;
             expect(result).to.be.true;
         });
 
@@ -308,23 +308,23 @@ describe('given a default camera context', () => {
     describe('when tilting a rotated and moved default camera', () => {
 
         beforeEach(() => {
-            svgar.camera.move(2, 3, -4.25);
-            svgar.camera.rotate(23, true);
-            svgar.camera.tilt(40, true);
+            svgar.cameraContext.move(2, 3, -4.25);
+            svgar.cameraContext.rotate(23, true);
+            svgar.cameraContext.tilt(40, true);
         });
 
         it('should set the camera target to the correct x value', () => {
-            const result = Math.abs(svgar.camera.target.x - 1.74884) < tolerance;
+            const result = Math.abs(svgar.cameraContext.target.x - 1.74884) < tolerance;
             expect(result).to.be.true;
         });
 
         it('should set the camera target to the correct y value', () => {
-            const result = Math.abs(svgar.camera.target.y - 3.59169) < tolerance;
+            const result = Math.abs(svgar.cameraContext.target.y - 3.59169) < tolerance;
             expect(result).to.be.true;
         });
 
         it('should set the camera target to the correct z value', () => {
-            const result = Math.abs(svgar.camera.target.z - (-5.01604)) < tolerance;
+            const result = Math.abs(svgar.cameraContext.target.z - (-5.01604)) < tolerance;
             expect(result).to.be.true;
         });
 
@@ -333,23 +333,23 @@ describe('given a default camera context', () => {
     describe('when tilting an arbitrarily positioned camera', () => {
 
         beforeEach(() => {
-            svgar.camera.position = { x: -0.0110431, y: -16.226, z: 12.2101 }
-            svgar.camera.target = { x: -1.61355, y: -18.4241, z: 8.71716 }
-            svgar.camera.tilt(-27, true);
+            svgar.cameraContext.position = { x: -0.0110431, y: -16.226, z: 12.2101 }
+            svgar.cameraContext.target = { x: -1.61355, y: -18.4241, z: 8.71716 }
+            svgar.cameraContext.tilt(-27, true);
         });
 
         it('should set the camera target to the correct x value', () => {
-            const result = Math.abs(svgar.camera.target.x - (-0.504682)) < tolerance;
+            const result = Math.abs(svgar.cameraContext.target.x - (-0.504682)) < tolerance;
             expect(result).to.be.true;
         });
 
         it('should set the camera target to the correct y value', () => {
-            const result = Math.abs(svgar.camera.target.y - (-16.9031)) < tolerance;
+            const result = Math.abs(svgar.cameraContext.target.y - (-16.9031)) < tolerance;
             expect(result).to.be.true;
         });
 
         it('should set the camera target to the correct z value', () => {
-            const result = Math.abs(svgar.camera.target.z - 7.86293) < tolerance;
+            const result = Math.abs(svgar.cameraContext.target.z - 7.86293) < tolerance;
             expect(result).to.be.true;
         });
 
@@ -358,21 +358,21 @@ describe('given a default camera context', () => {
     describe('when panning the default camera', () => {
 
         beforeEach(() => {
-            svgar.camera.pan(-15, true);
+            svgar.cameraContext.pan(-15, true);
         });
 
         it('should set the camera target to the correct x value', () => {
-            const result = Math.abs(svgar.camera.target.x - (0.258819)) < tolerance;
+            const result = Math.abs(svgar.cameraContext.target.x - (0.258819)) < tolerance;
             expect(result).to.be.true;
         });
 
         it('should set the camera target to the correct y value', () => {
-            const result = Math.abs(svgar.camera.target.y - 0) < tolerance;
+            const result = Math.abs(svgar.cameraContext.target.y - 0) < tolerance;
             expect(result).to.be.true;
         });
 
         it('should set the camera target to the correct z value', () => {
-            const result = Math.abs(svgar.camera.target.z - (-0.965926)) < tolerance;
+            const result = Math.abs(svgar.cameraContext.target.z - (-0.965926)) < tolerance;
             expect(result).to.be.true;
         });
 
@@ -381,22 +381,22 @@ describe('given a default camera context', () => {
     describe('when panning a rotated default camera', () => {
 
         beforeEach(() => {
-            svgar.camera.rotate(135, true);
-            svgar.camera.pan(22, true);
+            svgar.cameraContext.rotate(135, true);
+            svgar.cameraContext.pan(22, true);
         });
 
         it('should set the camera target to the correct x value', () => {
-            const result = Math.abs(svgar.camera.target.x - 0.264887) < tolerance;
+            const result = Math.abs(svgar.cameraContext.target.x - 0.264887) < tolerance;
             expect(result).to.be.true;
         });
 
         it('should set the camera target to the correct y value', () => {
-            const result = Math.abs(svgar.camera.target.y - (-0.264887)) < tolerance;
+            const result = Math.abs(svgar.cameraContext.target.y - (-0.264887)) < tolerance;
             expect(result).to.be.true;
         });
 
         it('should set the camera target to the correct z value', () => {
-            const result = Math.abs(svgar.camera.target.z - (-0.927184)) < tolerance;
+            const result = Math.abs(svgar.cameraContext.target.z - (-0.927184)) < tolerance;
             expect(result).to.be.true;
         });
 
@@ -405,23 +405,23 @@ describe('given a default camera context', () => {
     describe('when panning a rotated and moved default camera', () => {
 
         beforeEach(() => {
-            svgar.camera.move(-4.5, -9, -5);
-            svgar.camera.rotate(5, true);
-            svgar.camera.pan(-44, true);
+            svgar.cameraContext.move(-4.5, -9, -5);
+            svgar.cameraContext.rotate(5, true);
+            svgar.cameraContext.pan(-44, true);
         });
 
         it('should set the camera target to the correct x value', () => {
-            const result = Math.abs(svgar.camera.target.x - (-3.8079)) < tolerance;
+            const result = Math.abs(svgar.cameraContext.target.x - (-3.8079)) < tolerance;
             expect(result).to.be.true;
         });
 
         it('should set the camera target to the correct y value', () => {
-            const result = Math.abs(svgar.camera.target.y - (-8.9394)) < tolerance;
+            const result = Math.abs(svgar.cameraContext.target.y - (-8.9394)) < tolerance;
             expect(result).to.be.true;
         });
 
         it('should set the camera target to the correct z value', () => {
-            const result = Math.abs(svgar.camera.target.z - (-5.71934)) < tolerance;
+            const result = Math.abs(svgar.cameraContext.target.z - (-5.71934)) < tolerance;
             expect(result).to.be.true;
         });
 
@@ -430,23 +430,23 @@ describe('given a default camera context', () => {
     describe('when panning an arbitrarily positioned camera', () => {
 
         beforeEach(() => {
-            svgar.camera.position = { x: 0.5, y: 5.5, z: -2.2 }
-            svgar.camera.target = { x: 2, y: 6.5, z: -1.2 }
-            svgar.camera.pan(55, true);
+            svgar.cameraContext.position = { x: 0.5, y: 5.5, z: -2.2 }
+            svgar.cameraContext.target = { x: 2, y: 6.5, z: -1.2 }
+            svgar.cameraContext.pan(55, true);
         });
 
         it('should set the camera target to the correct x value', () => {
-            const result = Math.abs(svgar.camera.target.x - 0.4236) < tolerance;
+            const result = Math.abs(svgar.cameraContext.target.x - 0.4236) < tolerance;
             expect(result).to.be.true;
         });
 
         it('should set the camera target to the correct y value', () => {
-            const result = Math.abs(svgar.camera.target.y - 7.47868) < tolerance;
+            const result = Math.abs(svgar.cameraContext.target.y - 7.47868) < tolerance;
             expect(result).to.be.true;
         });
 
         it('should set the camera target to the correct z value', () => {
-            const result = Math.abs(svgar.camera.target.z - (-1.62642)) < tolerance;
+            const result = Math.abs(svgar.cameraContext.target.z - (-1.62642)) < tolerance;
             expect(result).to.be.true;
         });
 

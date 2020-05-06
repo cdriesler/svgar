@@ -36,6 +36,10 @@ export default class SvgarCamera {
         return [this.position, this.basisZ];
     }
 
+    public getBasis(): [Point3d, Point3d, Point3d] {
+        return [this.basisX, this.basisY, this.basisZ];
+    }
+
     public move(x: number, y: number, z: number): void {
 
     }
