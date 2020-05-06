@@ -147,6 +147,83 @@ describe('given a default camera before tracking', () => {
 
     });
 
+    describe('when panned -25 degrees and then tracking (-5, -2) from (0, -1, -3)', () => {
+
+        beforeEach(() => {
+            svgar.camera.position = { x: 0, y: -1, z: -3 }
+            svgar.camera.pan(-25, true);
+            svgar.camera.track(-5, -2);
+        });
+
+        it('should set camera.position.x to correct value', () => {
+            const result = Math.abs(svgar.camera.position.x - (-4.53154)) < tolerance;
+            expect(result).to.be.true;
+        });
+
+        it('should set camera.position.y to correct value', () => {
+            const result = Math.abs(svgar.camera.position.y - (-3)) < tolerance;
+            expect(result).to.be.true;
+        });
+
+        it('should set camera.position.z to correct value', () => {
+            const result = Math.abs(svgar.camera.position.z - (-5.11309)) < tolerance;
+            expect(result).to.be.true;
+        });
+
+    });
+
+    describe('when tilted 88 degrees and then tracking (7, 3.5) from (-2, 1, 2)', () => {
+
+        beforeEach(() => {
+            svgar.camera.position = { x: -2, y: 1, z: 2 }
+            svgar.camera.tilt(88, true)
+            svgar.camera.track(7, 3.5);
+        });
+
+        it('should set camera.position.x to correct value', () => {
+            const result = Math.abs(svgar.camera.position.x - 5) < tolerance;
+            expect(result).to.be.true;
+        });
+
+        it('should set camera.position.y to correct value', () => {
+            const result = Math.abs(svgar.camera.position.y - 1.12215) < tolerance;
+            expect(result).to.be.true;
+        });
+
+        it('should set camera.position.z to correct value', () => {
+            const result = Math.abs(svgar.camera.position.z - 5.49787) < tolerance;
+            expect(result).to.be.true;
+        });
+
+    });
+
+    describe('when arbitrarily positioned and then tracking (9, -9.9) from (4, -8, 12)', () => {
+
+        beforeEach(() => {
+            svgar.camera.position = { x: 4, y: -8, z: 12 }
+            svgar.camera.rotate(27.5, true);
+            svgar.camera.pan(-33, true);
+            svgar.camera.tilt(64.5, true);
+            svgar.camera.track(9, -9.9);
+        });
+
+        it('should set camera.position.x to correct value', () => {
+            const result = Math.abs(svgar.camera.position.x - 16.98) < tolerance;
+            expect(result).to.be.true;
+        });
+
+        it('should set camera.position.y to correct value', () => {
+            const result = Math.abs(svgar.camera.position.y - (-6.04802)) < tolerance;
+            expect(result).to.be.true;
+        });
+
+        it('should set camera.position.z to correct value', () => {
+            const result = Math.abs(svgar.camera.position.z - 9.40773) < tolerance;
+            expect(result).to.be.true;
+        });
+
+    });
+
 });
 
 describe('given a default camera before panning', () => {
