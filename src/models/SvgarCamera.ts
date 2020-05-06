@@ -24,14 +24,21 @@ export default class SvgarCamera {
         this.cream = cream;
     }
 
+    /**
+     * Reverts camera to default '2D' configuration at origin.
+     */
     public reset(): void {
         this.basisX = { x: 1, y: 0, z: 0 }
         this.basisY = { x: 0, y: 1, z: 0 }
         this.basisZ = { x: 0, y: 0, z: 1 }
         this.position = { x: 0, y: 0, z: 0 }
-        this.extents = { w: 10, h: 0 }
+        this.extents = { w: 10, h: 10 }
     }
 
+    /**
+     * Provides camera configuration information necessary for render.
+     * @returns [basisX, basisY, basisZ]
+     */
     public compile(): [Point3d, Point3d, Point3d] {
         return [this.basisX, this.basisY, this.basisZ];
     }
@@ -149,8 +156,49 @@ export default class SvgarCamera {
         this.basisY = yr;
     }
 
+    /**
+     * Aligns camera basis z axis to vector from current position to provided target.
+     * @remarks In english: has the camera 'look at' provided coordinate.
+     * @param {number} x x coordinate of point to target.
+     * @param {number} y y coordinate of point to target.
+     * @param {number} z z coordinate of point to target.
+     */
     public target(x: number, y: number, z: number): void {
+        // Cache initial values
+        const [i, j, k] = this.compile();
+        const p = this.position;
 
+        // Calculate and unitize target vector
+        const target: Point3d = {
+            x: x - p.x,
+            y: y - p.y,
+            z: z - p.z
+        }
+        const t: Point3d = this.cream.amplitude(target.x, target.y, target.z, 1);
+
+        // Calculate first rotation axis
+        // ( Chuck ) This is the average of inverse basis z axis and target vector
+        const n: Point3d = this.cream.amplitude(k.x, k.y, k.z, -1);
+        const a: Point3d = {
+            x: (n.x + t.x) / 2,
+            y: (n.y + t.y) / 2,
+            z: (n.z + t.z) / 2
+        }
+
+        // Rotate basis 180 degrees about first axis
+        const ir: Point3d = this.cream.rotate(i.x, i.y, i.z, 0, 0, 0, a.x, a.y, a.z, 180, true);
+        const jr: Point3d = this.cream.rotate(j.x, j.y, j.z, 0, 0, 0, a.x, a.y, a.z, 180, true);
+        const kr: Point3d = this.cream.rotate(k.x, k.y, k.z, 0, 0, 0, a.x, a.y, a.z, 180, true);
+
+        // Rotate basis x and y axis 180 degrees about resultant z axis
+        // ( Chuck ) This corrects for unexpected rotation in picture plane
+        const ia: Point3d = this.cream.rotate(ir.x, ir.y, ir.z, 0, 0, 0, kr.x, kr.y, kr.z, 180, true);
+        const ja: Point3d = this.cream.rotate(jr.x, jr.y, jr.z, 0, 0, 0, kr.x, kr.y, kr.z, 180, true);
+
+        // Cache result basis values
+        this.basisX = ia;
+        this.basisY = ja;
+        this.basisZ = kr;
     }
     
 }
