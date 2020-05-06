@@ -38,6 +38,117 @@ describe('given a default camera', () => {
 
 });
 
+describe('given a default camera before tracking', () => {
+
+    let svgar: Cube;
+
+    before(async () => {
+        svgar = new Cube();
+        await svgar.initialize();
+    });
+
+    beforeEach(() => {
+        svgar.camera.reset();
+    });
+
+    describe('when tracking (3, 5.5) from (0, 0, 0)', () => {
+
+        beforeEach(() => {
+            svgar.camera.track(3, 5.5);
+        });
+
+        it('should set camera.position.x to correct value', () => {
+            const result = Math.abs(svgar.camera.position.x - 3) < tolerance;
+            expect(result).to.be.true;
+        });
+
+        it('should set camera.position.y to correct value', () => {
+            const result = Math.abs(svgar.camera.position.y - 5.5) < tolerance;
+            expect(result).to.be.true;
+        });
+
+        it('should set camera.position.z to correct value', () => {
+            const result = Math.abs(svgar.camera.position.z - 0) < tolerance;
+            expect(result).to.be.true;
+        });
+
+    });
+
+    describe('when tracking (-2, 11) from (5, 2, 7.5)', () => {
+
+        beforeEach(() => {
+            svgar.camera.position = { x: 5, y: 2, z: 7.5 };
+            svgar.camera.track(-2, 11);
+        });
+
+        it('should set camera.position.x to correct value', () => {
+            const result = Math.abs(svgar.camera.position.x - 3) < tolerance;
+            expect(result).to.be.true;
+        });
+
+        it('should set camera.position.y to correct value', () => {
+            const result = Math.abs(svgar.camera.position.y - 13) < tolerance;
+            expect(result).to.be.true;
+        });
+
+        it('should set camera.position.z to correct value', () => {
+            const result = Math.abs(svgar.camera.position.z - 7.5) < tolerance;
+            expect(result).to.be.true;
+        });
+
+    });
+
+    describe('when rotated 57 degrees and then tracking (5.25, -2.5) from (0, 0, 0)', () => {
+
+        beforeEach(() => {
+            svgar.camera.rotate(57, true)
+            svgar.camera.track(5.25, -2.5);
+        });
+
+        it('should set camera.position.x to correct value', () => {
+            const result = Math.abs(svgar.camera.position.x - 4.95603) < tolerance;
+            expect(result).to.be.true;
+        });
+
+        it('should set camera.position.y to correct value', () => {
+            const result = Math.abs(svgar.camera.position.y - 3.04142) < tolerance;
+            expect(result).to.be.true;
+        });
+
+        it('should set camera.position.z to correct value', () => {
+            const result = Math.abs(svgar.camera.position.z - 0) < tolerance;
+            expect(result).to.be.true;
+        });
+
+    });
+
+    describe('when rotated 57 degrees and then tracking (5.25, -2.5) from (1, 2, 3)', () => {
+
+        beforeEach(() => {
+            svgar.camera.position = { x: 1, y: 2, z: 3 }
+            svgar.camera.rotate(57, true)
+            svgar.camera.track(5.25, -2.5);
+        });
+
+        it('should set camera.position.x to correct value', () => {
+            const result = Math.abs(svgar.camera.position.x - 5.95603) < tolerance;
+            expect(result).to.be.true;
+        });
+
+        it('should set camera.position.y to correct value', () => {
+            const result = Math.abs(svgar.camera.position.y - 5.04142) < tolerance;
+            expect(result).to.be.true;
+        });
+
+        it('should set camera.position.z to correct value', () => {
+            const result = Math.abs(svgar.camera.position.z - 3) < tolerance;
+            expect(result).to.be.true;
+        });
+
+    });
+
+});
+
 describe('given a default camera before panning', () => {
 
     let svgar: Cube;
@@ -382,7 +493,7 @@ describe('given a default camera before composite motion', () => {
         svgar.camera.reset();
     });
 
-    describe('when rotated 20 degrees then tilted -35 degrees', () => {
+    describe('when rotated 20 degrees and then tilted -35 degrees', () => {
 
         beforeEach(() => {
             svgar.camera.rotate(20, true);

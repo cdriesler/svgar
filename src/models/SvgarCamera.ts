@@ -70,7 +70,7 @@ export default class SvgarCamera {
         
         // Calculate total motion
         const t: Point3d = { 
-            x: tx.x + ty.y,
+            x: tx.x + ty.x,
             y: tx.y + ty.y,
             z: tx.z + ty.z
         }
