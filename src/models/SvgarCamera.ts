@@ -36,7 +36,7 @@ export default class SvgarCamera {
         return [this.position, this.basisZ];
     }
 
-    public getBasis(): [Point3d, Point3d, Point3d] {
+    public stage(): [Point3d, Point3d, Point3d] {
         return [this.basisX, this.basisY, this.basisZ];
     }
 
@@ -53,9 +53,26 @@ export default class SvgarCamera {
 
     }
 
-    // + up
+    /**
+     * Rotates basis y and z axis about current x axis.
+     * @remarks Positive values will look 'up' in picture plane.
+     * @param {number} angle Rotation angle in radians.
+     * @param {boolean} isDegrees Optional flag to declare input value is in degrees.
+     */
     public tilt(angle: number, isDegrees: boolean = false): void {
+        // Cache initial values
+        const [x, y, z] = this.stage();
 
+        // Convert angle to radians if necessary
+        const rotation = isDegrees ? angle * (Math.PI / 180) : angle;
+
+        // Perform rotations
+        const yr: Point3d = this.cream.rotate(y.x, y.y, y.z, 0, 0, 0, x.x, x.y, x.z, rotation, false);
+        const zr: Point3d = this.cream.rotate(z.x, z.y, z.z, 0, 0, 0, x.x, x.y, x.z, rotation, false);
+
+        // Cache result values
+        this.basisY = yr;
+        this.basisZ = zr;
     }
 
     /**
@@ -66,9 +83,7 @@ export default class SvgarCamera {
      */
     public rotate(angle: number, isDegrees: boolean = false): void {
         // Cache initial values
-        const x = this.basisX;
-        const y = this.basisY;
-        const z = this.basisZ;
+        const [x, y, z] = this.stage();
 
         // Convert angle to radians if necessary
         const rotation = isDegrees ? angle * (Math.PI / 180) : angle;
