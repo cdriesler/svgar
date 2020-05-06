@@ -59,7 +59,7 @@ describe('given a default camera before panning', () => {
 
         beforeEach(() => {
             svgar.camera.pan(127, true);
-            const [i, j, k] = svgar.camera.stage();
+            const [i, j, k] = svgar.camera.compile();
             x = i;
             y = j;
             z = k;
@@ -89,7 +89,7 @@ describe('given a default camera before panning', () => {
 
         beforeEach(() => {
             svgar.camera.pan(487, true);
-            const [i, j, k] = svgar.camera.stage();
+            const [i, j, k] = svgar.camera.compile();
             x = i;
             y = j;
             z = k;
@@ -119,7 +119,7 @@ describe('given a default camera before panning', () => {
 
         beforeEach(() => {
             svgar.camera.pan(-5.25, true);
-            const [i, j, k] = svgar.camera.stage();
+            const [i, j, k] = svgar.camera.compile();
             x = i;
             y = j;
             z = k;
@@ -168,7 +168,7 @@ describe('given a default camera before tilting', () => {
 
         beforeEach(() => {
             svgar.camera.tilt(32, true);
-            const [i, j, k] = svgar.camera.stage();
+            const [i, j, k] = svgar.camera.compile();
             x = i;
             y = j;
             z = k;
@@ -198,7 +198,7 @@ describe('given a default camera before tilting', () => {
 
         beforeEach(() => {
             svgar.camera.tilt(32, true);
-            const [i, j, k] = svgar.camera.stage();
+            const [i, j, k] = svgar.camera.compile();
             x = i;
             y = j;
             z = k;
@@ -228,7 +228,7 @@ describe('given a default camera before tilting', () => {
 
         beforeEach(() => {
             svgar.camera.tilt(-12.2, true);
-            const [i, j, k] = svgar.camera.stage();
+            const [i, j, k] = svgar.camera.compile();
             x = i;
             y = j;
             z = k;
@@ -277,7 +277,7 @@ describe('given a default camera before rotation', () => {
 
         beforeEach(() => {
             svgar.camera.rotate(50, true);
-            const [i, j, k] = svgar.camera.stage();
+            const [i, j, k] = svgar.camera.compile();
             x = i;
             y = j;
             z = k;
@@ -307,7 +307,7 @@ describe('given a default camera before rotation', () => {
 
         beforeEach(() => {
             svgar.camera.rotate(410, true);
-            const [i, j, k] = svgar.camera.stage();
+            const [i, j, k] = svgar.camera.compile();
             x = i;
             y = j;
             z = k;
@@ -337,7 +337,7 @@ describe('given a default camera before rotation', () => {
 
         beforeEach(() => {
             svgar.camera.rotate(-22.5, true);
-            const [i, j, k] = svgar.camera.stage();
+            const [i, j, k] = svgar.camera.compile();
             x = i;
             y = j;
             z = k;
@@ -387,7 +387,7 @@ describe('given a default camera before composite motion', () => {
         beforeEach(() => {
             svgar.camera.rotate(20, true);
             svgar.camera.tilt(-35, true);
-            const [i, j, k] = svgar.camera.stage();
+            const [i, j, k] = svgar.camera.compile();
             x = i;
             y = j;
             z = k;
@@ -418,7 +418,7 @@ describe('given a default camera before composite motion', () => {
         beforeEach(() => {
             svgar.camera.tilt(125, true);
             svgar.camera.pan(15, true);
-            const [i, j, k] = svgar.camera.stage();
+            const [i, j, k] = svgar.camera.compile();
             x = i;
             y = j;
             z = k;
@@ -449,7 +449,7 @@ describe('given a default camera before composite motion', () => {
         beforeEach(() => {
             svgar.camera.pan(217, true);
             svgar.camera.rotate(-67, true);
-            const [i, j, k] = svgar.camera.stage();
+            const [i, j, k] = svgar.camera.compile();
             x = i;
             y = j;
             z = k;
@@ -482,7 +482,7 @@ describe('given a default camera before composite motion', () => {
             svgar.camera.tilt(30, true);
             svgar.camera.pan(40, true);
             svgar.camera.tilt(-10, true);
-            const [i, j, k] = svgar.camera.stage();
+            const [i, j, k] = svgar.camera.compile();
             x = i;
             y = j;
             z = k;

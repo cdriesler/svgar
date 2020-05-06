@@ -32,11 +32,7 @@ export default class SvgarCamera {
         this.extents = { w: 10, h: 0 }
     }
 
-    public compile(): [Point3d, Point3d] {
-        return [this.position, this.basisZ];
-    }
-
-    public stage(): [Point3d, Point3d, Point3d] {
+    public compile(): [Point3d, Point3d, Point3d] {
         return [this.basisX, this.basisY, this.basisZ];
     }
 
@@ -65,7 +61,7 @@ export default class SvgarCamera {
      */
     public track(x: number, y: number): void {
         // Cache initial values
-        const [i, j, k] = this.stage();
+        const [i, j, k] = this.compile();
         const p = this.position;
 
         // Calculate component motion
@@ -95,7 +91,7 @@ export default class SvgarCamera {
      */
     public pan(angle: number, isDegrees: boolean = false): void {
         // Cache initial values
-        const [x, y, z] = this.stage();
+        const [x, y, z] = this.compile();
 
         // Convert angle to radians if necessary
         const rotation = isDegrees ? angle * (Math.PI / 180) : angle;
@@ -117,7 +113,7 @@ export default class SvgarCamera {
      */
     public tilt(angle: number, isDegrees: boolean = false): void {
         // Cache initial values
-        const [x, y, z] = this.stage();
+        const [x, y, z] = this.compile();
 
         // Convert angle to radians if necessary
         const rotation = isDegrees ? angle * (Math.PI / 180) : angle;
@@ -139,7 +135,7 @@ export default class SvgarCamera {
      */
     public rotate(angle: number, isDegrees: boolean = false): void {
         // Cache initial values
-        const [x, y, z] = this.stage();
+        const [x, y, z] = this.compile();
 
         // Convert angle to radians if necessary
         const rotation = isDegrees ? angle * (Math.PI / 180) : angle;
