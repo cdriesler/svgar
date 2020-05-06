@@ -24,7 +24,7 @@ export default class SvgarCamera {
         this.cream = cream;
     }
 
-    private reset(): void {
+    public reset(): void {
         this.basisX = { x: 1, y: 0, z: 0 }
         this.basisY = { x: 0, y: 1, z: 0 }
         this.basisZ = { x: 0, y: 0, z: 1 }
@@ -58,9 +58,28 @@ export default class SvgarCamera {
 
     }
 
-    // + CCW
+    /**
+     * Rotates basis x and y axis about current z axis.
+     * @remarks Positive values are counterclockwise in picture plane.
+     * @param {number} angle Rotation angle in radians.
+     * @param {boolean} isDegrees Optional flag to declare input value is in degrees.
+     */
     public rotate(angle: number, isDegrees: boolean = false): void {
+        // Cache initial values
+        const x = this.basisX;
+        const y = this.basisY;
+        const z = this.basisZ;
 
+        // Convert angle to radians if necessary
+        const rotation = isDegrees ? angle * (Math.PI / 180) : angle;
+
+        // Perform rotations
+        const xr: Point3d = this.cream.rotate(x.x, x.y, x.z, 0, 0, 0, z.x, z.y, z.z, rotation, false);
+        const yr: Point3d = this.cream.rotate(y.x, y.y, y.z, 0, 0, 0, z.x, z.y, z.z, rotation, false);
+
+        // Cache result values
+        this.basisX = xr;
+        this.basisY = yr;
     }
 
     public target(x: number, y: number, z: number): void {
