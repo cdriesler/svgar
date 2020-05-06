@@ -40,12 +40,51 @@ export default class SvgarCamera {
         return [this.basisX, this.basisY, this.basisZ];
     }
 
+    /**
+     * Translates camera position in world coordinate space.
+     * @param {number} x Amount to move in direction of world x axis.
+     * @param {number} y Amount to move in direction of world y axis.
+     * @param {number} z Amount to move in direction of world z axis.
+     */
     public move(x: number, y: number, z: number): void {
+        // Cache initial values
+        const p = this.position;
 
+        // Apply motion to camera position
+        this.position = {
+            x: p.x + x,
+            y: p.y + y,
+            z: p.z + z
+        }
     }
 
+    /**
+     * Translates camera position along current picture plane.
+     * @param {number} x Amount to move in direction of basis x axis.
+     * @param {number} y Amount to move in direction of basis y axis.
+     */
     public track(x: number, y: number): void {
+        // Cache initial values
+        const [i, j, k] = this.stage();
+        const p = this.position;
 
+        // Calculate component motion
+        const tx: Point3d = this.cream.amplitude(i.x, i.y, i.z, x);
+        const ty: Point3d = this.cream.amplitude(j.x, j.y, j.z, y);
+        
+        // Calculate total motion
+        const t: Point3d = { 
+            x: tx.x + ty.y,
+            y: tx.y + ty.y,
+            z: tx.z + ty.z
+        }
+
+        // Apply motion to camera position
+        this.position = {
+            x: p.x + t.x,
+            y: p.y + t.y,
+            z: p.z + t.z
+        }
     }
 
     /**
