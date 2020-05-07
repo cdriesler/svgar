@@ -18,7 +18,7 @@ function equalsWithinTolerance(a: Point3d, b: Point3d, tolerance: number): boole
 
 const tolerance = 0.001;
 
-describe('given a default camera', () => {
+describe('given a newly initialized cube', () => {
 
     let svgar: Cube;
 
@@ -28,12 +28,38 @@ describe('given a default camera', () => {
     });
 
     beforeEach(() => {
-        svgar.camera.position = { x: 0, y: 0, z: 0 };
-        svgar.camera.target(0, 0, -1);
+        svgar.camera.reset();
     });
 
-    it('should be created when the cube is initialized', () => {
+    it('should create a camera object', () => {
         expect(svgar.camera).to.not.be.undefined;
+    });
+
+    it('should assign the default "2D" basis', () => {
+        const [i, j, k] = svgar.camera.compile();
+
+        const ti: Point3d = { x: 1, y: 0, z: 0 }
+        const ri = equalsWithinTolerance(ti, i, tolerance);
+        expect(ri).to.be.true;
+
+        const tj: Point3d = { x: 0, y: 1, z: 0 }
+        const rj = equalsWithinTolerance(tj, j, tolerance);
+        expect(rj).to.be.true;
+
+        const tk: Point3d = { x: 0, y: 0, z: 1 }
+        const rk = equalsWithinTolerance(tk, k, tolerance);
+        expect(rk).to.be.true;
+    });
+
+    it('should set camera position to the origin', () => {
+        const target: Point3d = { x: 0, y: 0, z: 0 }
+        const result = equalsWithinTolerance(svgar.camera.position, target, tolerance);
+        expect(result).to.be.true;
+    });
+
+    it('should set camera extents to 10x10 square', () => {
+        expect(svgar.camera.extents.w).to.equal(10);
+        expect(svgar.camera.extents.h).to.equal(10);
     });
 
 });
@@ -698,3 +724,82 @@ describe('given a default camera before composite motion', () => {
 
 });
 
+describe('given a default camera before target motion', () => {
+
+    let svgar: Cube;
+
+    let x: Point3d;
+    let y: Point3d;
+    let z: Point3d;
+
+    before(async () => {
+        svgar = new Cube();
+        await svgar.initialize();
+    });
+
+    beforeEach(() => {
+        svgar.camera.reset();
+    });
+
+    describe('when targeting (2, 2, -6) from (0, 0, 0)', () => {
+
+        beforeEach(() => {
+            svgar.camera.target(2, 2, -6);
+            const [i, j, k] = svgar.camera.compile();
+            x = i;
+            y = j;
+            z = k;
+        });
+
+        it('should correctly set basis x-axis', () => {
+            const target: Point3d = { x: 0.952267, y: -0.047733, z: 0.301511 }
+            const result = equalsWithinTolerance(x, target, tolerance);
+            expect(result).to.be.true;
+        });
+
+        it('should correctly set basis y-axis', () => {
+            const target: Point3d = { x: -0.047733, y: 0.952267, z: 0.301511 }
+            const result = equalsWithinTolerance(y, target, tolerance);
+            expect(result).to.be.true;
+        });
+
+        it('should correctly set basis z-axis', () => {
+            const target: Point3d = { x: -0.301511, y: -0.301511, z: 0.904534 }
+            const result = equalsWithinTolerance(z, target, tolerance);
+            expect(result).to.be.true;
+        });
+
+    });
+
+    describe('when targeting (5, -3, -5) from (3, 1.5, 4)', () => {
+
+        beforeEach(() => {
+            svgar.camera.position = { x: 3, y: 1.5, z: 4 }
+            svgar.camera.target(5, -3, -5);
+            const [i, j, k] = svgar.camera.compile();
+            x = i;
+            y = j;
+            z = k;
+        });
+
+        it('should correctly set basis x-axis', () => {
+            const target: Point3d = { x: 0.979755, y: 0.0455506, z: 0.194948 }
+            const result = equalsWithinTolerance(x, target, tolerance);
+            expect(result).to.be.true;
+        });
+
+        it('should correctly set basis y-axis', () => {
+            const target: Point3d = { x: 0.0455506, y: 0.897511, z: -0.438633 }
+            const result = equalsWithinTolerance(y, target, tolerance);
+            expect(result).to.be.true;
+        });
+
+        it('should correctly set basis z-axis', () => {
+            const target: Point3d = { x: -0.194948, y: 0.438633, z: 0.877266 }
+            const result = equalsWithinTolerance(z, target, tolerance);
+            expect(result).to.be.true;
+        });
+
+    });
+
+});
