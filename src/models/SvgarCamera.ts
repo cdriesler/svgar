@@ -4,21 +4,28 @@ interface Point3d {
     z: number
 }
 
+/**
+ * Camera object for generation of 2D picture plane.
+ * Basis consists of three unitized axis vectors anchored at the origin.
+ * The positive z-axis points away from the subject and towards the viewer.
+ * @property {Point3d} position Current camera position in 3D xyz coordinates.
+ * @property {w: number, h: number} extents Picture plane width and height.
+ */
 export default class SvgarCamera {
 
-    // All basis values to be anchored to origin and unitized
-    // basisZ points away from subject, towards viewer, for intuitive rotation (+ is CCW)
     private basisX: Point3d;
     private basisY: Point3d;
     private basisZ: Point3d;
 
-    // Simpler interface
     public position: Point3d;
-    // Determines what is 'in frame'
     public extents: { w: number, h: number };
 
+    /** Cached reference to initialized cream wasm module */
     private cream: any;
 
+    /**
+     * @hideconstructor
+     */
     constructor(cream: any) {
         this.reset();
         this.cream = cream;
