@@ -1,10 +1,10 @@
 import rhino3dm from 'rhino3dm';
-import CameraContext from './SvgarCameraContext';
+import Camera from './SvgarCamera';
 import ElementsContext from './SvgarElementsContext';
 
 export default class SvgarCube {
     
-    public camera: CameraContext | undefined;
+    public camera: Camera | undefined;
     public elements: ElementsContext | undefined;
 
     public svg: string = '';
@@ -18,21 +18,18 @@ export default class SvgarCube {
 
     /**
      * Loads wasm dependencies and stores references in class instance.
-     * This method must be called and successfully resolved before any other functionality.
+     * @remarks This method must be called and successfully resolved before any other functionality.
      * @returns {boolean} - `true` on successful load
      */
     public async initialize(): Promise<boolean> {
 
         this.creamModule = await import('./../wasm/cream');
-        this.camera = new CameraContext(this.creamModule);
+        this.camera = new Camera(this.creamModule);
 
-        rhino3dm().then(rhino => {
+        await rhino3dm().then(rhino => {
             this.rhinoModule = rhino;
+            delete rhino['then']
         });
-
-        // ( Chuck ) Current version of rhino3dm module "promise" does not resolve. Terrible temp workaround below.
-        const wait = new Promise(resolve => setTimeout(resolve, 1000));
-        await wait;
 
         this.elements = new ElementsContext(this.creamModule, this.rhinoModule);
 
@@ -47,13 +44,14 @@ export default class SvgarCube {
     public render(w: number, h: number): string {
 
         const camera = this.camera;
-        const [position, normal, extents] = this.camera.compile();
+        const [i, j, k] = this.camera.compile();
+        const extents = this.camera.extents;
 
         function toSvg(coordinates: number[]): string {
             if (coordinates.length < 12) return '';
 
-            const x = extents.x;
-            const y = extents.y;
+            const x = extents.w;
+            const y = extents.h;
 
             const xMax = x / 2;
             const xMin = x / -2;
