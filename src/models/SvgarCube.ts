@@ -160,9 +160,13 @@ class SvgarElementsContext {
             }).bind(this) as (object: any) => void
         },
         svgar: {
+            box: ((min: Point3d, max: Point3d) => {
+
+            }).bind(this) as (min: Point3d, max: Point3d) => void,
             lineCurve: ((from: Point3d, to: Point3d) => {
                 this.addElement(new LineCurve(from, to));
-            }).bind(this) as (from: Point3d, to: Point3d) => void
+            }).bind(this) as (from: Point3d, to: Point3d) => void,
+        
         }
     }
 
