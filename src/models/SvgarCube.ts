@@ -1,6 +1,13 @@
 import rhino3dm from 'rhino3dm';
 import Camera from './SvgarCamera';
 import Element from './SvgarElement';
+import SvgarGeometry from 'src/geometry/SvgarGeometry';
+
+interface Point3d {
+    x: number,
+    y: number,
+    z: number
+}
 
 export default class SvgarCube {
     
@@ -92,6 +99,21 @@ export default class SvgarCube {
     }
 }
 
+import LineCurve from './../geometry/svgar/LineCurve'
+
+class SvgarElementSelection {
+
+    private elements: Element[];
+
+    constructor(elements: Element[]) {
+        this.elements = elements;
+    }
+
+    public then(callback: (element: Element) => void) {
+        this.elements.forEach(el => callback(el));
+    }
+}
+
 class SvgarElementsContext {
 
     private elements: Element[];
@@ -102,6 +124,46 @@ class SvgarElementsContext {
     constructor(cream: any, rhino: any) {
         this.cream = cream;
         this.rhino = rhino;
+    }
+
+    public all(): SvgarElementSelection {
+        return new SvgarElementSelection(this.elements);
+    }
+
+    public find(search: (element: Element) => boolean): SvgarElementSelection {
+        return new SvgarElementSelection(this.elements.filter(el => search(el)));
+    }
+
+    public remove(search: (element: Element) => boolean): SvgarElementSelection {
+        this.elements = this.elements.filter(el => !search(el));
+        return new SvgarElementSelection(this.elements);
+    }
+
+    public reset(): void {
+        this.elements = [];
+    }
+
+    private addElementFromRhino(geometry: any): void {
+        const object = (this.rhino.CommonObject as any).decode(geometry);
+        console.log(object.constructor.name);
+        console.log(object.pointAtEnd);
+    }
+
+    private addElement(geometry: SvgarGeometry) {
+        this.elements.push(new Element(geometry, this.cream));
+    }
+
+    public add = {
+        rhino: {
+            object: ((object: any) => {
+                this.addElementFromRhino(object);
+            }).bind(this) as (object: any) => void
+        },
+        svgar: {
+            lineCurve: ((from: Point3d, to: Point3d) => {
+                this.addElement(new LineCurve(from, to));
+            }).bind(this) as (from: Point3d, to: Point3d) => void
+        }
     }
 
 }
