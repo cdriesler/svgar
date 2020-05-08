@@ -216,7 +216,12 @@ export default class Box extends SvgarGeometry {
         const max = this.max;
 
         const faces: [Point3d, Point3d][] = [
-            [ { x: 0, y: 0, z: 0 }, { x: 0, y: 0, z: 0 } ]
+            [ { x: min.x, y: min.y, z: min.z }, { x: max.x, y: max.y, z: min.z } ],
+            [ { x: min.x, y: min.y, z: min.z }, { x: max.x, y: min.y, z: max.z } ],
+            [ { x: max.x, y: min.y, z: min.z }, { x: max.x, y: max.y, z: max.z } ],
+            [ { x: max.y, y: max.y, z: min.z }, { x: min.x, y: max.y, z: max.z } ],
+            [ { x: min.x, y: max.y, z: min.z }, { x: min.x, y: min.y, z: max.z } ],
+            [ { x: min.x, y: min.y, z: max.z }, { x: max.x, y: max.y, z: max.z } ],
         ]
 
         return faces.map(x => fitOrthogonalQuad(x[0], x[1]));
