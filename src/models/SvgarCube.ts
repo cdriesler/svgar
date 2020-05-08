@@ -1,11 +1,11 @@
 import rhino3dm from 'rhino3dm';
 import Camera from './SvgarCamera';
-import ElementsContext from './SvgarElementsContext';
+import Element from './SvgarElement';
 
 export default class SvgarCube {
     
     public camera: Camera | undefined;
-    public elements: ElementsContext | undefined;
+    public elements: SvgarElementsContext | undefined;
 
     public svg: string = '';
 
@@ -31,7 +31,7 @@ export default class SvgarCube {
             delete rhino['then']
         });
 
-        this.elements = new ElementsContext(this.creamModule, this.rhinoModule);
+        this.elements = new SvgarElementsContext(this.creamModule, this.rhinoModule);
 
         return this.creamModule != undefined && this.rhinoModule != undefined;
     }
@@ -90,4 +90,18 @@ export default class SvgarCube {
 
         return svg;
     }
+}
+
+class SvgarElementsContext {
+
+    private elements: Element[];
+
+    private cream: any;
+    private rhino: any;
+
+    constructor(cream: any, rhino: any) {
+        this.cream = cream;
+        this.rhino = rhino;
+    }
+
 }
