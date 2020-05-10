@@ -100,6 +100,7 @@ export default class SvgarCube {
 }
 
 import LineCurve from './../geometry/svgar/LineCurve'
+import Box from './../geometry/svgar/Box'
 
 class SvgarElementSelection {
 
@@ -111,6 +112,16 @@ class SvgarElementSelection {
 
     public then(callback: (element: Element) => void) {
         this.elements.forEach(el => callback(el));
+    }
+}
+
+interface SvgarAddElementContext {
+    rhino: {
+        object: (object: any) => void
+    },
+    svgar: {
+        box: (min: Point3d, max: Point3d) => SvgarElementSelection,
+        lineCurve: (from: Point3d, to: Point3d) => SvgarElementSelection
     }
 }
 
@@ -149,24 +160,29 @@ class SvgarElementsContext {
         console.log(object.pointAtEnd);
     }
 
-    private addElement(geometry: SvgarGeometry) {
-        this.elements.push(new Element(geometry, this.cream));
+    private addElement(geometry: SvgarGeometry): Element {
+        const el = new Element(geometry, this.cream);
+        this.elements.push(el);
+        return el;
     }
 
-    public add = {
+    public add: SvgarAddElementContext = {
         rhino: {
             object: ((object: any) => {
                 this.addElementFromRhino(object);
-            }).bind(this) as (object: any) => void
+            }).bind(this)
         },
         svgar: {
-            box: ((min: Point3d, max: Point3d) => {
-
-            }).bind(this) as (min: Point3d, max: Point3d) => void,
-            lineCurve: ((from: Point3d, to: Point3d) => {
-                this.addElement(new LineCurve(from, to));
-            }).bind(this) as (from: Point3d, to: Point3d) => void,
-        
+            box: ((min: Point3d, max: Point3d): SvgarElementSelection => {
+                const geo = new Box(min, max);
+                const el = this.addElement(geo);
+                return new SvgarElementSelection([el]);
+            }).bind(this),
+            lineCurve: ((from: Point3d, to: Point3d): SvgarElementSelection => {
+                const geo = new LineCurve(from, to);
+                const el = this.addElement(geo);
+                return new SvgarElementSelection([el]);
+            }).bind(this),
         }
     }
 
