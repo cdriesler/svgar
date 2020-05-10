@@ -27,6 +27,12 @@ export default class SvgarElement {
         this.id = newGuid();
         this.geometry = geometry;
         this.cream = cream;
+
+        this.material = {
+            "stroke": "black",
+            "stroke-width": "1px",
+            "fill": "none"
+        }
     }
 
     public compile(a: Point3d, i: Point3d, j: Point3d, k: Point3d): number[][] {

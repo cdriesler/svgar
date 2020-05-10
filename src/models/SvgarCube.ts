@@ -54,12 +54,36 @@ export default class SvgarCube {
         const p = this.camera.position;
 
         const elements: number[][] = [];
+        const styles: string[] = [];
 
         this.elements.all().then(el => {
-            elements.push(...el.compile(p, i, j, k));
+            const compiled = el.compile(p, i, j, k);
+            elements.push(...compiled);
+
+            const mat: string = Object.keys(el.material).map(x => { return `${x}="${el.material[x]}"` }).join(' ');
+            for(let i = 0; i < compiled.length; i++) {
+                styles.push(mat);
+            }
         });
+
+        const paths: string[] = elements.map((el: number[], eli) => {
+
+            let path = `<path d="M ${el[0]} ${el[1]}`;
+
+            for(let i = 0; i < el.length; i+=8) {
+                path = path + ` C ${el[i + 2]} ${el[i + 3]}, ${el[i + 4]} ${el[i + 5]}, ${el[i + 6]} ${el[i + 7]}`
+            };
+
+            path = path + `" vector-effect="non-scaling-stroke" ${styles[eli]} />`;
+
+            return path;
+        })
         
-        const svg = elements.toString();
+        const svg = [
+            `<svg width="${this.w}" height="${this.h}" viewBox="-${this.camera.extents.w / 2} -${this.camera.extents.h / 2} ${this.camera.extents.w} ${this.camera.extents.h}" xmlns="http://www.w3.org/2000/svg">`,
+            paths.join("\n"),
+            `</svg>`
+        ].join("\n");
 
         this.svg = svg;
 
