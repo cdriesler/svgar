@@ -25,7 +25,9 @@ describe('given a default svgar cube', () => {
     describe('when creating and drawing a box', () => {
 
         beforeEach(() => {
-            svgar.elements.add.svgar.box({ x: -1, y: -1, z: -1 }, { x: 1, y: 1, z: 1 });
+            svgar.elements.add.svgar.box({ x: -1, y: -1, z: -1 }, { x: 1, y: 1, z: 1 })
+                .then(el => el.material = Object.assign(el.material, {fill: 'red'}));
+            svgar.camera.move(0, 0, 10);
             svgar.camera.pan(15, true);
             svgar.camera.tilt(35, true);
             svgar.render();

@@ -105,7 +105,7 @@ export default class SvgarElement {
         // Sort sub-elements by distance to camera
         const sortedElements: number[][] = [];
 
-        const sortedDistances = elementDistances.concat().sort();
+        const sortedDistances = elementDistances.concat().sort().reverse();
         sortedDistances.forEach((d, i) => {
             const originalIndex = elementDistances.findIndex(x => x === d);
             elementDistances[originalIndex] = NaN;
