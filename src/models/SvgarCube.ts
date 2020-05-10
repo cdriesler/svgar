@@ -15,6 +15,8 @@ export default class SvgarCube {
     public elements: SvgarElementsContext | undefined;
 
     public svg: string = '';
+    public w: number = 100;
+    public h: number = 100;
 
     private rhinoModule: undefined | any;
     private creamModule: undefined | any;
@@ -47,8 +49,25 @@ export default class SvgarCube {
         return this.creamModule.greet('wasm');
     }
 
+    public render(w?: number, h?: number): string {
+        const [i, j, k] = this.camera.compile();
+        const p = this.camera.position;
+
+        const elements: number[][] = [];
+
+        this.elements.all().then(el => {
+            elements.push(...el.compile(p, i, j, k));
+        });
+        
+        const svg = elements.toString();
+
+        this.svg = svg;
+
+        return svg;
+    }
+
     // Convert coordinates to svg
-    public render(w: number, h: number): string {
+    public OLD_render(w: number, h: number): string {
 
         const camera = this.camera;
         const [i, j, k] = this.camera.compile();
@@ -127,7 +146,7 @@ interface SvgarAddElementContext {
 
 class SvgarElementsContext {
 
-    private elements: Element[];
+    private elements: Element[] = [];
 
     private cream: any;
     private rhino: any;

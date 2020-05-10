@@ -117,6 +117,15 @@ pub fn amplitude(x: f64, y: f64, z: f64, amplitude: f64) -> Point3d {
     return v_s;
 }
 
+// Helper function for wasm_bindgen. Returns distance between two points.
+#[wasm_bindgen]
+pub fn distance(x: f64, y: f64, z: f64, a: f64, b: f64, c: f64) -> f64 {
+    let vector_a = Point3d::new(x, y, z);
+    let vector_b = Point3d::new(a, b, c);
+
+    return vector_a.distance_to(&vector_b);
+}
+
 #[cfg(test)]
 mod point3d {
 

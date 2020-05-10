@@ -12,3 +12,29 @@ describe('given a new svgar cube', () => {
     })
 
 })
+
+describe('given a default svgar cube', () => {
+
+    let svgar: SvgarCube;
+
+    before(async () => {
+        svgar = new SvgarCube();
+        await svgar.initialize();
+    });
+
+    describe('when creating and drawing a box', () => {
+
+        beforeEach(() => {
+            svgar.elements.add.svgar.box({ x: -1, y: -1, z: -1 }, { x: 1, y: 1, z: 1 });
+            // svgar.camera.target(1,1,1);
+            svgar.render();
+        })
+
+        it('should generate the expected svg markup', () => {
+            expect(svgar.svg).to.not.equal('');
+            console.log(`\n\n${svgar.svg}\n\n`);
+        });
+
+    });
+
+});

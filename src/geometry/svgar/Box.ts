@@ -21,7 +21,8 @@ function fitOrthogonalQuad(a: Point3d, b: Point3d, tolerance: number = 1): numbe
         Math.abs(a.x - b.x)  //yz
     ]
 
-    if (!o.find(x => x < tolerance)) {
+    if (o.findIndex(x => x < tolerance) === -1) {
+        console.log(o);
         throw new Error('No quad available within tolerance.')
     }
 
