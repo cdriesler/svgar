@@ -330,6 +330,47 @@ mod project {
     }
 }
 
+/// Returns a point { x, y, z = 0 } the maps a 3D coordinate to the given frame's 2D space.
+/// NOTE: Assumes the given xyz coordinate is already within the camera plane anchored at the origin. 
+/// 
+/// # Arguments
+/// 
+/// * `x` - x coordinate of point to remap
+/// * `y` - y coordinate of point to remap
+/// * `z` - z coordinate of point to remap
+/// 
+/// * `ix` - x component of unitized basis x axis
+/// * `iy` - y component of unitized basis x axis
+/// * `iz` - z component of unitized basis x axis
+/// 
+/// * `jx` - x component of unitized basis y axis
+/// * `jy` - y component of unitized basis y axis
+/// * `jz` - z component of unitized basis y axis
+/// 
+#[wasm_bindgen]
+pub fn remap(x: f64, y: f64, z: f64, ix: f64, iy: f64, iz: f64, jx: f64, jy: f64, jz: f64) -> Point3d {
+
+    let point = Point3d::new(x, y, z);
+    let x_direction = Point3d::new(ix, iy, iz);
+    let y_direction = Point3d::new(jx, jy, jz);
+
+    let x_component = Point3d::project(&point, &x_direction);
+    let x = if Point3d::dot(&x_component, &x_direction) >= 0.0 {
+        x_component.magnitude()
+    } else {
+        x_component.magnitude() * -1.0
+    };
+
+    let y_component = Point3d::project(&point, &y_direction);
+    let y = if Point3d::dot(&y_component, &y_direction) >= 0.0 {
+        y_component.magnitude()
+    } else {
+        y_component.magnitude() * -1.0
+    };
+
+    return Point3d { x: x, y: y, z: 0.0 }
+}
+
 /// Returns a point { x, y, z = 0 } projected onto a 3D plane in that plane's 2D coordinate space
 /// 
 /// # Arguments

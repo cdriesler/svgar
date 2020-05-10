@@ -107,10 +107,28 @@ export default class SvgarElement {
         })
         
         // Map projected 3D coordinates to 2D picture plane coordinates
+        const remapped: number[][] = sortedElements.map(c => {
+            const remapCache: number[] = [];
+
+            for(let index = 0; index < c.length; index += 3) {
+                // Cache initial values
+                const x = c[index];
+                const y = c[index + 1];
+                const z = c[index + 2];
+
+                // Perform remap
+                const r: Point3d = this.cream.remap(x, y, z, i.x, i.y, i.z, j.x, j.y, j.z);
+
+                // Cache remapped values
+                remapCache.push(...[r.x, r.y]);
+            }
+
+            return remapCache;
+        })
 
         console.log(`${this.id} : rendered ${projected.length} sub-elements`)
 
-        return sortedElements;
+        return remapped;
     } 
     
 }
