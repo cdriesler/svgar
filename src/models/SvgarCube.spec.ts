@@ -27,9 +27,16 @@ describe('given a default svgar cube', () => {
         beforeEach(() => {
             svgar.elements.add.svgar.box({ x: -1, y: -1, z: -1 }, { x: 1, y: 1, z: 1 })
                 .then(el => el.material = Object.assign(el.material, {fill: 'red'}));
+            svgar.elements.add.svgar.box({ x: 3, y: -1, z: -1}, { x: 5, y: 1, z: 1})
+                .then(el => el.material = Object.assign(el.material, {fill: 'blue'}))
+            svgar.elements.add.svgar.box({ x: -5, y: -1, z: -1}, { x: -3, y: 1, z: 1})
+            svgar.elements.add.svgar.lineCurve({ x: -10, y: 0, z: 0 }, { x: 10, y: 0, z: 0 })
+                .then(el => el.material = Object.assign(el.material, {stroke: 'grey'}))
+            svgar.elements.add.svgar.lineCurve({ x: 0, y: -10, z: 0 }, { x: 0, y: 10, z: 0 })
+                .then(el => el.material = Object.assign(el.material, {stroke: 'orange'}))
             svgar.camera.move(0, 0, 10);
-            svgar.camera.pan(15, true);
-            svgar.camera.tilt(35, true);
+            svgar.camera.tilt(-80, true);
+            svgar.camera.pan(5, true);
             svgar.render();
         })
 

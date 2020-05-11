@@ -53,20 +53,27 @@ export default class SvgarCube {
         const [i, j, k] = this.camera.compile();
         const p = this.camera.position;
 
-        const elements: number[][] = [];
-        const styles: string[] = [];
+        const renderData: { coordinates: number[], distance: number, style: string }[] = [];
 
         this.elements.all().then(el => {
-            const compiled = el.compile(p, i, j, k);
-            elements.push(...compiled);
-
+            const [ coordinates, distances ] = el.compile(p, i, j, k);
             const mat: string = Object.keys(el.material).map(x => { return `${x}="${el.material[x]}"` }).join(' ');
-            for(let i = 0; i < compiled.length; i++) {
-                styles.push(mat);
-            }
+
+            coordinates.forEach((x, i) => {
+                renderData.push({
+                    coordinates: coordinates[i],
+                    distance: distances[i],
+                    style: mat
+                })
+            })
         });
 
-        const paths: string[] = elements.map((el: number[], eli) => {
+        // Sort elements
+        const sortedData = renderData.sort((a, b) => b.distance - a.distance);
+
+        const paths: string[] = sortedData.map(element => {
+
+            const el = element.coordinates;
 
             let path = `<path d="M ${el[0]} ${el[1]}`;
 
@@ -74,7 +81,7 @@ export default class SvgarCube {
                 path = path + ` C ${el[i + 2]} ${el[i + 3]}, ${el[i + 4]} ${el[i + 5]}, ${el[i + 6]} ${el[i + 7]}`
             };
 
-            path = path + `" vector-effect="non-scaling-stroke" ${styles[eli]} />`;
+            path = path + `" vector-effect="non-scaling-stroke" ${element.style} />`;
 
             return path;
         })
@@ -144,6 +151,7 @@ export default class SvgarCube {
 
 import LineCurve from './../geometry/svgar/LineCurve'
 import Box from './../geometry/svgar/Box'
+import { distance } from 'src/wasm/cream';
 
 class SvgarElementSelection {
 

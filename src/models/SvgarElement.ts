@@ -35,7 +35,16 @@ export default class SvgarElement {
         }
     }
 
-    public compile(a: Point3d, i: Point3d, j: Point3d, k: Point3d): number[][] {
+    /**
+     * 
+     * @param a 
+     * @param i 
+     * @param j 
+     * @param k 
+     * 
+     * @returns [ 2D coordinate beziers, sub-element distances to camera]
+     */
+    public compile(a: Point3d, i: Point3d, j: Point3d, k: Point3d): [ number[][], number[] ] {
 
         const elementXDomain: number[] = [];
         const elementYDomain: number[] = [];
@@ -69,7 +78,7 @@ export default class SvgarElement {
                 projectedCache.push(...[pt.x, pt.y, pt.z]);
             }
 
-            // Calculate bounding box of 3D element
+            // Calculate bounding box of 3D sub-element
             const min: Point3d = {
                 x: Math.min(...xDomain),
                 y: Math.min(...yDomain),
@@ -134,7 +143,7 @@ export default class SvgarElement {
 
         console.log(`${this.id} : rendered ${projected.length} sub-elements`)
 
-        return remapped;
+        return [ remapped, sortedDistances ];
     } 
     
 }
