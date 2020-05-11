@@ -141,7 +141,7 @@ export default class SvgarElement {
             return remapCache;
         })
 
-        console.log(`${this.id} : rendered ${projected.length} sub-elements`)
+        // console.log(`${this.id} : rendered ${projected.length} sub-elements`)
 
         return [ remapped, sortedDistances ];
     } 
