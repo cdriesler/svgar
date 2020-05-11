@@ -49,9 +49,9 @@ export default class SvgarCube {
         }
         catch(err) {
             console.log('Failed to load rhino3dm wasm. Falling back to svgar-only mode.')
-        }
 
-        this.rhinoModule = {};
+            this.rhinoModule = {};
+        }
 
         this.elements = new SvgarElementsContext(this.creamModule, this.rhinoModule);
 
@@ -66,8 +66,8 @@ export default class SvgarCube {
         const [i, j, k] = this.camera.compile();
         const p = this.camera.position;
 
-        this.w = w ?? this.w;
-        this.h = h ?? this.h;
+        this.w = w || this.w;
+        this.h = h || this.h;
 
         const renderData: { coordinates: number[], distance: number, style: string }[] = [];
 
