@@ -62,9 +62,9 @@ export default class SvgarElement {
 
             for(let index = 0; index < c.length; index += 3) {
                 // Cache initial values
-                const x = c[index];
-                const y = c[index + 1];
-                const z = c[index + 2];
+                const x = c[index] - a.x;
+                const y = c[index + 1] - a.y;
+                const z = c[index + 2] - a.z;
 
                 // Cache coordinate values
                 xDomain.push(x);
