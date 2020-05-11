@@ -69,7 +69,7 @@ export default class SvgarCube {
         });
 
         // Sort elements
-        const sortedData = renderData.sort((a, b) => b.distance - a.distance);
+        const sortedData = renderData.sort((a, b) => a.distance - b.distance);
 
         const paths: string[] = sortedData.map(element => {
 

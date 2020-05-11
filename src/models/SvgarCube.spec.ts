@@ -25,16 +25,19 @@ describe('given a default svgar cube', () => {
     describe('when creating and drawing a box', () => {
 
         beforeEach(() => {
-            // svgar.elements.add.svgar.box({ x: -1, y: -1, z: -1 }, { x: 1, y: 1, z: 1 })
-            //     .then(el => el.material = Object.assign(el.material, {fill: 'red'}));
+            svgar.elements.add.svgar.box({ x: -1, y: -1, z: -1 }, { x: 1, y: 1, z: 1 })
             svgar.elements.add.svgar.box({ x: 3, y: -1, z: -1}, { x: 5, y: 1, z: 1})
-                .then(el => el.material = Object.assign(el.material, {fill: 'blue'}))
+                .then(el => el.material = Object.assign(el.material, {fill: 'orange'}))
             svgar.elements.add.svgar.box({ x: -5, y: -1, z: -1}, { x: -3, y: 1, z: 1})
-            svgar.elements.add.svgar.lineCurve({ x: -10, y: 0, z: 0 }, { x: 10, y: 0, z: 0 })
-                .then(el => el.material = Object.assign(el.material, {stroke: 'grey'}))
-            svgar.elements.add.svgar.lineCurve({ x: 0, y: -10, z: 0 }, { x: 0, y: 10, z: 0 })
-                .then(el => el.material = Object.assign(el.material, {stroke: 'orange'}))
-            svgar.camera.move(4, 0, 4);
+                .then(el => el.material = Object.assign(el.material, {fill: 'green'}));
+            svgar.elements.add.svgar.lineCurve({ x: 0, y: 0, z: 0 }, { x: 1.5, y: 0, z: 0 })
+                .then(el => el.material = Object.assign(el.material, {stroke: 'red'}))
+            svgar.elements.add.svgar.lineCurve({ x: 0, y: 0, z: 0 }, { x: 0, y: 1.5, z: 0 })
+                .then(el => el.material = Object.assign(el.material, {stroke: 'green'}))
+            svgar.elements.add.svgar.lineCurve({ x: 0, y: 0, z: 0 }, { x: 0, y: 0, z: 1.5 })
+                .then(el => el.material = Object.assign(el.material, {stroke: 'blue'}))
+            svgar.elements.all().then(el => el.material['stroke-linejoin'] = 'round')
+            svgar.camera.move(0, -5, 1);
             svgar.camera.tilt(-80, true);
             svgar.camera.pan(20, true);
             svgar.render();
