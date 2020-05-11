@@ -1,0 +1,11 @@
+.github/
+data/
+src/
+target/
+
+!dist/
+
+Cargo.lock
+Cargo.toml
+tsconfig.json
+tsconfig.test.json
