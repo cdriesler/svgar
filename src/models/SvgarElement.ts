@@ -1,4 +1,5 @@
 import Geometry from '../geometry/SvgarGeometry'
+import Sphere from 'src/geometry/svgar/Sphere';
 
 interface Point3d {
     x: number,
@@ -140,6 +141,51 @@ export default class SvgarElement {
 
             return remapCache;
         })
+
+        // Handle special geometric cases (sphere)
+        if (this.geometry.type === 'Sphere') {
+            const sphere = this.geometry as Sphere;
+
+            // Draw circle of given radius about new center point
+            const sigma = sphere.radius * 0.55191502449;
+            const [cx, cy] = remapped[0];
+            const r = sphere.radius;
+
+            remapped[0] = [
+                cx + r,
+                cy,
+                cx + r,
+                cy + sigma,
+                cx + sigma,
+                cy + r,
+                cx,
+                cy + r, // I
+                cx,
+                cy + r,
+                cx - sigma,
+                cy + r,
+                cx - r,
+                cy + sigma,
+                cx - r,
+                cy, // II
+                cx - r,
+                cy,
+                cx - r,
+                cy - sigma,
+                cx - sigma,
+                cy - r,
+                cx,
+                cy - r, // III
+                cx,
+                cy - r,
+                cx + sigma,
+                cy - r,
+                cx + r,
+                cy - sigma,
+                cx + r,
+                cy, // IV
+            ]
+        }
 
         // console.log(`${this.id} : rendered ${projected.length} sub-elements`)
 
