@@ -12,7 +12,7 @@ export default class Sphere extends SvgarGeometry {
     public radius: number;
 
     constructor(center: Point3d, radius: number) {
-        super('LineCurve');
+        super('Sphere');
         this.center = center;
         this.radius = radius;
     }

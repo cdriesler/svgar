@@ -166,6 +166,7 @@ export default class SvgarCube {
 import Box from './../geometry/svgar/Box'
 import LineCurve from './../geometry/svgar/LineCurve'
 import Polyline from './../geometry/svgar/Polyline'
+import Sphere from './../geometry/svgar/Sphere'
 import { distance } from 'src/wasm/cream';
 
 class SvgarElementSelection {
@@ -188,7 +189,8 @@ interface SvgarAddElementContext {
     svgar: {
         box: (min: Point3d, max: Point3d) => SvgarElementSelection,
         lineCurve: (from: Point3d, to: Point3d) => SvgarElementSelection,
-        polyline: (pts: Point3d[], isClosed?: boolean) => SvgarElementSelection
+        polyline: (pts: Point3d[], isClosed?: boolean) => SvgarElementSelection,
+        sphere: (center: Point3d, radius: number) => SvgarElementSelection
     }
 }
 
@@ -253,8 +255,13 @@ class SvgarElementsContext {
             polyline: ((pts: Point3d[], isClosed?: boolean): SvgarElementSelection => {
                 const geo = new Polyline(pts, isClosed);
                 const el = this.addElement(geo);
-                return new SvgarElementSelection([el])
+                return new SvgarElementSelection([el]);
             }).bind(this),
+            sphere: ((center: Point3d, radius: number): SvgarElementSelection => {
+                const geo = new Sphere(center, radius);
+                const el = this.addElement(geo);
+                return new SvgarElementSelection([el]);
+            })
         }
     }
 
