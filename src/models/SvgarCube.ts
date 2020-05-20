@@ -35,23 +35,21 @@ export default class SvgarCube {
         this.creamModule = await import('./../wasm/cream');
         this.camera = new Camera(this.creamModule);
 
-        // this.elements = new SvgarElementsContext(this.creamModule, {});
+        this.elements = new SvgarElementsContext(this.creamModule, {});
 
-        // try {
-        // await rhino3dm().then(rhino => {
-        //     this.rhinoModule = rhino;
-        //     delete rhino['then']
-        // })
-        // } catch {
+        try {
+        await rhino3dm().then(rhino => {
+            this.rhinoModule = rhino;
+            delete rhino['then']
+        })
+        } catch {
 
-        // }
+        }
         
-        // if (!this.rhinoModule) {
-        //     console.log('Failed to load rhino3dm wasm. Falling back to svgar-only mode.')
-        //     this.rhinoModule = {};
-        // }    
-        
-        this.rhinoModule = {}
+        if (!this.rhinoModule) {
+            console.log('Failed to load rhino3dm wasm. Falling back to svgar-only mode.')
+            this.rhinoModule = {};
+        }    
 
         this.elements = new SvgarElementsContext(this.creamModule, this.rhinoModule);
 
