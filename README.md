@@ -10,4 +10,8 @@ So, this is "svg for architecture" and that comes with a few priorities:
 - Drawings as information-rich interfaces
 - Delicious line quality
 
-`v0.4` was completed [Nov 2019](https://github.com/WeWorkSandbox/svgar). While it was somewhat useful for static assets, work needed to be done to make realtime graphics possible. `v0.5` is currently exploring the magic .wasm promises and refactoring the api for more intuitive use.
+`v0.6` is currently in development with a 'rust-first' mindset. Still early, so not yet clear what that means.
+
+`v0.5` was stopped in June 2020. It was the first version that used rust & wasm for geometry calculations, but the project architecture didn't quite respect the limitations of the technology. Performance was better, but still suffered. And the wasm libraries would not reliably load in all contexts.
+
+`v0.4` was completed [Nov 2019](https://github.com/WeWorkSandbox/svgar). While it was somewhat useful for static assets, work needed to be done to make realtime graphics possible.

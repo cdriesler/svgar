@@ -5,3 +5,6 @@ dist
 # rust
 target
 src/wasm
+
+# vscode
+.vscode
