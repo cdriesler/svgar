@@ -111,63 +111,12 @@ export default class SvgarCube {
         return svg;
     }
 
-    // Convert coordinates to svg
-    public OLD_render(w: number, h: number): string {
-
-        const camera = this.camera;
-        const [i, j, k] = this.camera.compile();
-        const extents = this.camera.extents;
-
-        function toSvg(coordinates: number[]): string {
-            if (coordinates.length < 12) return '';
-
-            const x = extents.w;
-            const y = extents.h;
-
-            const xMax = x / 2;
-            const xMin = x / -2;
-            const yMax = y / 2;
-            const yMin = y / -2;
-
-            const c = coordinates;
-
-            function normalize(min: number, max: number, value: number): number {
-                return (value - min) / (max - min);
-            }
-
-            function toX(value: number): number {
-                return normalize(xMin, xMax, value) * w;
-            }
-
-            function toY(value: number): number {
-                return h - (normalize(yMin, yMax, value) * h);
-            }
-
-            var d: string[] = [`M ${toX(c[0])} ${toY(c[1])}`];
-
-            for (let i = 0; i < coordinates.length; i+=12) {
-                d.push(`C ${toX(c[i + 3])} ${toY(c[i + 4])} ${toX(c[i + 6])} ${toY(c[i + 7])} ${toX(c[i + 9])} ${toY(c[i + 10])}`);
-            }
-            return `<path d="${d.join(' ')}" stroke="black" fill="none" stroke-linecap="round" stroke-width="0.7mm" />`;
-        }
-
-        const svg = [
-            `<svg version="1.1" width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">`,
-            // this.elements.map(el => toSvg(el.compile(camera))).join('\n'),
-            `</svg>`
-        ].join('\n');
-
-        this.svg = svg;
-
-        return svg;
-    }
 }
 
 import Box from './../geometry/svgar/Box'
 import LineCurve from './../geometry/svgar/LineCurve'
 import Polyline from './../geometry/svgar/Polyline'
 import Sphere from './../geometry/svgar/Sphere'
-import { distance } from 'src/wasm/cream';
 
 class SvgarElementSelection {
 

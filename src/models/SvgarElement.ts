@@ -187,8 +187,6 @@ export default class SvgarElement {
             ]
         }
 
-        // console.log(`${this.id} : rendered ${projected.length} sub-elements`)
-
         return [ remapped, sortedDistances ];
     } 
     
