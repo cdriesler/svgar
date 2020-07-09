@@ -141,6 +141,14 @@ mod point3d {
         assert!(a.equals(&b));
     }
 
+    #[test]
+    fn test_precise_point3d_equals() {
+        let a = Point3d::new(1.00001, 1.00001, 1.00001);
+        let b = Point3d::new(1.00001, 1.00001, 1.00001);
+
+        assert!(a.equals(&b));
+    }
+
     // Point3d::dot() tests
 
     #[test]
