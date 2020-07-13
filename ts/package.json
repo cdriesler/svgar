@@ -1,0 +1,43 @@
+{
+  "name": "svgar",
+  "version": "0.6.0",
+  "description": "svg for architectural things",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "npm run build:rs && npm run build:ts",
+    "build:rs": "cd ../rs && wasm-pack build",
+    "build:ts": "tsc",
+    "build:test": "npm run build:test:rs",
+    "build:test:ts": "tsc",
+    "build:test:rs": "cd ../rs && wasm-pack build --target nodejs",
+    "test": "npm run build:test && npm run test:ts",
+    "test:rs": "cd ../rs && wasm-pack test --headless --firefox",
+    "test:ts": "cross-env TS_NODE_PROJECT='tsconfig.test.json' mocha -r ts-node/register src/**/*.spec.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cdriesler/svgar.git"
+  },
+  "author": "chuck",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/cdriesler/svgar/issues"
+  },
+  "homepage": "https://github.com/cdriesler/svgar#readme",
+  "bundledDependencies": [
+    "rsvg"
+  ],
+  "dependencies": {
+    "rsvg": "file:../rs/pkg"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.2.7",
+    "@types/mocha": "^5.2.7",
+    "chai": "^4.2.0",
+    "cpy-cli": "^3.0.0",
+    "cross-env": "^6.0.3",
+    "mocha": "^6.2.2",
+    "ts-node": "^8.5.4",
+    "typescript": "^3.9.6"
+  }
+}

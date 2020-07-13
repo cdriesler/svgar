@@ -1,10 +1,10 @@
-# nodejs
-node_modules
-dist
+# ts
+ts/dist
+ts/node_modules
 
-# rust
-target
-src/wasm
+# rs
+rs/pkg
+rs/target
 
-# vscode
+# project
 .vscode

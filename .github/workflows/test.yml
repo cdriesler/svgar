@@ -10,6 +10,9 @@ jobs:
     strategy:
       matrix:
         rust-version: [stable]
+    
+    env:
+      working-directory: ./ts
   
     steps:
     - uses: actions/checkout@v1
@@ -20,9 +23,9 @@ jobs:
     - name: Install wasm-pack
       run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
     - name: Build wasm for tests
-      run: npm run build:node
+      run: npm run build:test:rs
     - name: Run rust tests
-      run: npm run test:wasm
+      run: npm run test:rs
   
   test-ts:
 
@@ -32,6 +35,9 @@ jobs:
       matrix:
         node-version: [12.14]
         rust-version: [stable]
+
+    env:
+      working-directory: ./ts
     
     steps:
     - uses: actions/checkout@v1
@@ -42,7 +48,7 @@ jobs:
     - name: Install wasm-pack
       run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
     - name: Build wasm for tests
-      run: npm run build:node
+      run: npm run build:test:rs
     - name: Initialize node.js 
       uses: actions/setup-node@v1
       with:

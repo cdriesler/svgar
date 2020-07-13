@@ -1,0 +1,18 @@
+[package]
+name = "rsvg"
+version = "0.6.0"
+authors = ["chuck <cdriesler.iv@gmail.com>"]
+description = "geometry library for svgar"
+license = "AGPL-3.0"
+repository = "https://github.com/cdriesler/svgar"
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+path = "src/lib.rs"
+
+[dependencies]
+wasm-bindgen = "0.2.64"
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3.13"
