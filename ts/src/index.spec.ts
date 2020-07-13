@@ -1,16 +1,16 @@
-import { run } from './index'
+import { Svgar } from './index'
 import { expect } from 'chai'
 import 'mocha'
 
 describe('given this context', () => {
 
-    let message = 'waiting'
+    let svgar: Svgar = new Svgar()
 
     before(async () => {
-        message = await run()
+        await svgar.initialize()
     })
 
     it('should run without issues', () => {
-        expect(message).to.equal("Howdy, from wasm!")
+        svgar.doThing()
     })
 })
