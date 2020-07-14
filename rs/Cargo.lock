@@ -140,6 +140,7 @@ name = "rsvg"
 version = "0.6.0"
 dependencies = [
  "array2d",
+ "console_error_panic_hook",
  "uuid",
  "wasm-bindgen",
  "wasm-bindgen-test",

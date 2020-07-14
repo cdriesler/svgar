@@ -13,6 +13,7 @@ path = "src/lib.rs"
 
 [dependencies]
 array2d = "0.2.1"
+console_error_panic_hook = "0.1.6"
 uuid = { version = "0.8", features = ["v4", "wasm-bindgen"]}
 wasm-bindgen = "0.2.64"
 

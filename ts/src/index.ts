@@ -25,4 +25,9 @@ export class Svgar {
 
         return b.render()
     }
+
+    public make(x: number, y: number, z: number): Anchor {
+        console.log('making')
+        return this.wasm.Anchor.new(x, y, z)
+    }
 }
