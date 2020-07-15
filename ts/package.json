@@ -4,15 +4,13 @@
   "description": "svg for architectural things",
   "main": "dist/index.js",
   "scripts": {
-    "build": "npm run build:rs && npm run build:ts",
-    "build:rs": "cd ../rs && wasm-pack build",
+    "build": "npm run build:rs:prod && npm run build:ts",
     "build:ts": "tsc",
-    "build:test": "npm run build:test:rs",
-    "build:test:ts": "tsc",
-    "build:test:rs": "cd ../rs && wasm-pack build --target nodejs",
-    "test": "npm run build:test && npm run test:ts",
+    "build:rs:prod": "cd ../rs && wasm-pack build",
+    "build:rs:node": "cd ../rs && wasm-pack build --target nodejs",
+    "test": "npm run test:rs && npm run test:ts",
     "test:rs": "cd ../rs && wasm-pack test --headless --firefox",
-    "test:ts": "cross-env TS_NODE_PROJECT='tsconfig.test.json' mocha -r ts-node/register src/**/*.spec.ts"
+    "test:ts": "npm run build:rs:node && cross-env TS_NODE_PROJECT='tsconfig.test.json' mocha -r ts-node/register src/**/*.spec.ts"
   },
   "repository": {
     "type": "git",
