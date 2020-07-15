@@ -14,19 +14,7 @@ export class Svgar {
         this.wasm = await import('../node_modules/rsvg')        
     }
 
-    public doThing(): string {
-        const a = this.wasm.Anchor.new(0, 0, 0)
-        const b = Anchor.new(1, 1, 1)
-
-        a.move_thing()
-        console.log(`${a.render()}`)
-        console.log(`${b.render()}`)
-
-        return b.render()
-    }
-
     public make(x: number, y: number, z: number): Anchor {
-        console.log('making')
-        return this.wasm.Anchor.new(x, y, z)
+        return new Anchor(x, y, z)
     }
 }

@@ -10,16 +10,12 @@ describe('given this context', () => {
         await svgar.initialize()
     })
 
-    it('should run without issues', () => {
-        svgar.doThing()
-    })
-
     it('should allow me to modify the transform', () => {
-        const pt = svgar.make(1, 2, 3)
+        const pt = svgar.make(1, 1, 1)
         console.log(pt.render())
-        console.log(pt.render_transform())
         console.log('Moving...')
         pt.translate(2, 3, 4)
-        console.log(pt.render_transform())
+        pt.translate(10, 0, 0)
+        console.log(pt.render())
     })
 })

@@ -1,66 +1,83 @@
 use wasm_bindgen::prelude::*;
 use uuid::Uuid;
-use array2d::Array2D;
+use ndarray::prelude::*;
 use console_error_panic_hook;
 use std::panic;
 
-#[wasm_bindgen]
-struct Transform {
-    matrix: Array2D<f64>,
+mod transform {
+    use ndarray::{arr2, Array2};
+
+    pub fn translate(matrix: &Array2<f64>, x: f64, y: f64, z: f64) -> Array2<f64> {
+        
+        let transform = arr2(&[
+            [1.0, 0.0, 0.0, x  ],
+            [0.0, 1.0, 0.0, y  ],
+            [0.0, 0.0, 1.0, z  ],
+            [0.0, 0.0, 0.0, 1.0]
+        ]);
+
+        return transform.dot(matrix)
+    }
 }
 
 #[wasm_bindgen]
-impl Transform {
-    pub fn translate(&mut self, x: f64, y: f64, z: f64) {
-        let m = &mut self.matrix;
-
-        let a = m.get_mut(0, 3).unwrap();
-        *a = x + *a;
-
-        let b = m.get_mut(1, 3).unwrap();
-        *b = y + *b;
-
-        let c = m.get_mut(2, 3).unwrap();
-        *c = z + *c;
-    }
+pub struct Point3d {
+    x: f64,
+    y: f64,
+    z: f64
 }
 
 #[wasm_bindgen]
 pub struct Anchor {
     id: Uuid,
-    position: [f64; 3],
-    transform: Transform,
+    position: Array2<f64>,
+    transform: Array2<f64>
 }
 
 #[wasm_bindgen]
 impl Anchor {
+
+    #[wasm_bindgen(constructor)]
     pub fn new(x: f64, y: f64, z: f64) -> Anchor {
         console_error_panic_hook::set_once();
+
         let uuid = Uuid::new_v4();
-        return Anchor{ id: uuid, position: [x, y, z], transform: Transform{ matrix: Array2D::filled_with(0.0, 4, 4)} }
+        let default_position = arr2(&[
+            [x  ],
+            [y  ],
+            [z  ],
+            [1.0]
+        ]);
+        let default_transform = arr2(&[
+            [1.0, 0.0, 0.0, 0.0],
+            [0.0, 1.0, 0.0, 0.0],
+            [0.0, 0.0, 1.0, 0.0],
+            [0.0, 0.0, 0.0, 1.0],
+        ]);
+
+        return Anchor{ id: uuid, position: default_position, transform: default_transform }
     }
 
     pub fn render(&self) -> String {
-        let [x, y, z] = self.position;
-        return format!("{}, {}, {}", x, y, z)
+        let location = self.transform.dot(&self.position);
+
+        return format!("{}", location)
+    }
+
+    pub fn get_position(&self) -> Point3d {
+        let x = self.position.get((0, 0)).unwrap();
+        let y = self.position.get((0, 1)).unwrap();
+        let z = self.position.get((0, 2)).unwrap();
+
+        return Point3d { x: *x, y: *y, z: *z }
     }
 
     pub fn render_transform(&self) -> String {
-        let cols = self.transform.matrix.as_columns();
-        if let [i, j, k, w] = &cols.get(3).unwrap()[..] {
-            return format!("{}, {}, {}, {}", i, j, k, w);
-        } else {
-            "".to_string()
-        }        
-    }
-
-    pub fn move_thing(&mut self) {
-        let p = self.position;
-        self.position = [0.0 + p[0], 1.0 + p[1], 2.0 + p[2]];
+        format!("{}", self.transform)    
     }
 
     pub fn translate(&mut self, x: f64, y: f64, z: f64) {
-        self.transform.translate(x, y, z)
+        self.transform = transform::translate(&self.transform, x, y, z);
     }
 }
 
@@ -75,12 +92,12 @@ struct Element {
     id: Uuid,
     r#type: GeometryType,
     geometry: Vec<Anchor>,
-    transform: Transform
+    transform: Array2<f64>
 }
 
 #[wasm_bindgen]
 struct Camera {
-    transform: Transform
+    transform: Array2<f64>
 }
 
 #[wasm_bindgen]
