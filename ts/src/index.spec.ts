@@ -1,6 +1,7 @@
 import { Svgar } from './index'
 import { expect } from 'chai'
 import 'mocha'
+import { GeometryType } from 'rsvg'
 
 describe('given this context', () => {
 
@@ -17,5 +18,14 @@ describe('given this context', () => {
         pt.translate(2, 3, 4)
         pt.translate(10, 0, 0)
         console.log(pt.render())
+        const [x, y, z] = pt.get_position()
+        console.log(`${x}, ${y}, ${z}`)
+    })
+
+    it('should allow me to make elements', () => {
+        const scene = svgar.scene
+        const id = scene.add_element(GeometryType.Line)
+        const result = scene.render(id)
+        console.log(result)
     })
 })
