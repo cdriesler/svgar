@@ -80,7 +80,7 @@ pub enum GeometryType {
 }
 
 #[wasm_bindgen]
-struct Element {
+pub struct Element {
     id: String,
     geometry_type: GeometryType,
     geometry: Vec<Anchor>,
@@ -124,7 +124,7 @@ impl Element {
 }
 
 #[wasm_bindgen]
-struct Scene {
+pub struct Scene {
     elements: Vec<Element>
 }
 
@@ -136,23 +136,14 @@ impl Scene {
         Scene { elements: vec![] }
     }
 
-    // pub fn get_element(&self, id: String) -> Option<Element> {
-    //     let i = self.elements.iter().position(|el| el.get_id() == id);
-
-    //     match i {
-    //         Some(val) => return Some(*self.elements.get(val).unwrap()),
-    //         None => return None
-    //     }
-
-    // }
-
     pub fn add_element(&mut self, geometry_type: GeometryType) -> String {
         let mut el = Element::new(geometry_type);
         el.add_anchor(1.0, 2.0, 3.0);
+        let id = el.get_id();
 
         self.elements.push(el);
 
-        return self.elements.last().unwrap().get_id()
+        return id
     }
 
     pub fn render(&self, id: String) -> Option<Vec<usize>> {
