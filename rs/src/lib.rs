@@ -114,6 +114,15 @@ impl Element {
         return id
     }
 
+    pub fn get_anchor(&self, index: usize) -> Option<String> {
+        let anchor = self.geometry.get(index);
+
+        match anchor {
+            Some(a) => return Some(a.get_id()),
+            None => return None,
+        }
+    }
+
     pub fn get_id(&self) -> String {
         return format!("{}", self.id)
     }
@@ -136,7 +145,7 @@ impl Scene {
         Scene { elements: vec![] }
     }
 
-    pub fn add_element(&mut self, geometry_type: GeometryType) -> String {
+    pub fn add_element(&mut self, geometry_type: GeometryType, _coordinates: Vec<f64>) -> String {
         let mut el = Element::new(geometry_type);
         el.add_anchor(1.0, 2.0, 3.0);
         let id = el.get_id();
@@ -144,6 +153,22 @@ impl Scene {
         self.elements.push(el);
 
         return id
+    }
+
+    pub fn get_anchor(&self, element_id: String, anchor_index: usize) -> Option<String> {
+        let el = self.elements.iter().position(|el| el.get_id() == element_id);
+
+        let element = match el {
+            Some(index) => Some(self.elements.get(index).unwrap()),
+            None => None
+        };
+
+        let anchor = match element {
+            Some(ele) => ele.get_anchor(anchor_index),
+            None => None
+        };
+
+        return anchor
     }
 
     pub fn render(&self, id: String) -> Option<Vec<usize>> {

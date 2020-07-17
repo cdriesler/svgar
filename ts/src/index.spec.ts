@@ -24,7 +24,7 @@ describe('given this context', () => {
 
     it('should allow me to make elements', () => {
         const scene = svgar.scene
-        const id = scene.add_element(GeometryType.Line)
+        const id = scene.add_element(GeometryType.Line, new Float64Array([2, 3, 4]))
         const result = scene.render(id)
         console.log(result)
     })
