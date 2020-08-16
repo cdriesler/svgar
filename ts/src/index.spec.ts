@@ -30,4 +30,8 @@ describe('given this context', () => {
         const result = scene.render(id)
         console.log(result)
     })
+
+    it('should allow me to do stuff with rhino', () => {
+        svgar.testRhino()
+    })
 })

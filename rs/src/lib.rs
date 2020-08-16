@@ -134,7 +134,8 @@ impl Element {
 
 #[wasm_bindgen]
 pub struct Scene {
-    elements: Vec<Element>
+    elements: Vec<Element>,
+    camera: Array2<f64>
 }
 
 #[wasm_bindgen]
@@ -142,7 +143,13 @@ impl Scene {
 
     #[wasm_bindgen(constructor)]
     pub fn new() -> Scene {
-        Scene { elements: vec![] }
+        let default_camera = arr2(&[
+            [1.0,  0.0,  0.0,  0.0],
+            [0.0,  1.0,  0.0,  0.0],
+            [0.0,  0.0,  -1.0, 0.0],
+            [0.0,  0.0,  0.0,  1.0]
+        ]);
+        Scene { elements: vec![], camera: default_camera }
     }
 
     pub fn add_element(&mut self, geometry_type: GeometryType, _coordinates: Vec<f64>) -> String {
@@ -179,11 +186,7 @@ impl Scene {
             None => return None
         }
     }
-}
 
-#[wasm_bindgen]
-struct Camera {
-    transform: Array2<f64>
 }
 
 #[wasm_bindgen]

@@ -23,9 +23,11 @@
   },
   "homepage": "https://github.com/cdriesler/svgar#readme",
   "bundledDependencies": [
+    "rhino3dm",
     "rsvg"
   ],
   "dependencies": {
+    "rhino3dm": "^0.12.0",
     "rsvg": "file:../rs/pkg"
   },
   "devDependencies": {
